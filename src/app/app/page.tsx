@@ -49,142 +49,29 @@ export default function DashboardPage() {
 
   return (
     <AppShell>
-      <div className="space-y-6">
-        {/* Header with status */}
-        <DashboardHeader state={currentState} profile={profile} />
+      {/* Header with status */}
+      <DashboardHeader state={currentState} profile={profile} />
 
-        {/* Current state overview */}
-        <StateOverview state={currentState} />
+      {/* Current state overview */}
+      <StateOverview state={currentState} />
 
-        {/* Main recommendation area */}
-        {primaryRecommendation ? (
-          <>
-            <PrimaryRecommendation recommendation={primaryRecommendation} />
-            
-            {/* Supporting recommendations */}
-            {secondaryRecommendations.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {secondaryRecommendations.map((rec) => (
-                  <RecommendationCard
-                    key={rec.message}
-                    recommendation={rec}
-                    compact
-                  />
-                ))}
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="glass rounded-xl p-6 border border-zinc-800">
-            <div className="text-center py-8">
-              <p className="text-zinc-400">No recommendations yet</p>
-              <p className="text-sm text-zinc-500 mt-2">
-                Complete your first check-in to get personalized suggestions
-              </p>
-            </div>
+      {/* Main recommendation area */}
+      {primaryRecommendation ? (
+        <>
+          <PrimaryRecommendation recommendation={primaryRecommendation} />
+          <div className="space-y-4">
+            {secondaryRecommendations.map((rec) => (
+              <RecommendationCard key={rec.id} recommendation={rec} />
+            ))}
           </div>
-        )}
+        </>
+      ) : null}
 
-        {/* Timeline pattern */}
-        <TimelineSection logs={mockTimeline} />
-
-        {/* Check-in and history */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <QuickCheckIn />
-          <RecentCheckIns />
-        </div>
+      {/* Daily Timeline */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold">Daily Timeline</h2>
+        <RecentCheckIns logs={logs} />
       </div>
     </AppShell>
-        {/* Daily Timeline */}
-        <section className="glass rounded-xl p-6 border border-zinc-800 mt-8">
-          <h2 className="text-xl font-semibold mb-4">Daily Timeline</h2>
-          <div className="space-y-3">
-            <TimelineEvent 
-              time="08:30"
-              type="wake"
-              description="Woke up feeling refreshed"
-            />
-            <TimelineEvent 
-              time="09:00"
-              type="eat"
-              description="Had breakfast - oatmeal with berries"
-            />
-            <TimelineEvent 
-              time="10:30"
-              type="focus"
-              description="Deep work session started"
-            />
-          </div>
-        </section>
-
-        {/* Quick Actions */}
-        <section className="glass rounded-xl p-6 border border-zinc-800 mt-8">
-          <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <QuickAction 
-              icon="water"
-              label="Hydrate"
-              onClick={() => console.log('Hydrate')}
-            />
-            <QuickAction 
-              icon="snack"
-              label="Log Meal"
-              onClick={() => console.log('Log Meal')}
-            />
-            <QuickAction 
-              icon="focus"
-              label="Start Focus"
-              onClick={() => console.log('Start Focus')}
-            />
-            <QuickAction 
-              icon="rest"
-              label="Take Break"
-              onClick={() => console.log('Take Break')}
-            />
-          </div>
-        </section>
-      </div>
-    </AppShell>
-  );
-}
-
-function MetricCard({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between items-center">
-      <span className="text-zinc-300">{label}</span>
-      <span className="font-medium capitalize">{value}</span>
-    </div>
-  );
-}
-
-function RecommendationCard({ 
-  type, 
-  message, 
-  priority,
-  reasoning,
-  caution 
-}: { 
-  type: string; 
-  message: string; 
-  priority: number;
-  reasoning?: string;
-  caution?: string;
-}) {
-  return (
-    <div className="flex items-center gap-4 p-3 bg-zinc-800/50 rounded-lg">
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-        {priority}
-      </div>
-      <div className="flex-1">
-        <p className="font-medium">{message}</p>
-        <p className="text-sm text-zinc-400 capitalize">{type}</p>
-        {reasoning && (
-          <p className="text-xs text-zinc-500 mt-1">{reasoning}</p>
-        )}
-        {caution && (
-          <p className="text-xs text-red-400 mt-1">⚠️ {caution}</p>
-        )}
-      </div>
-    </div>
   );
 }
