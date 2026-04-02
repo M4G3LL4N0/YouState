@@ -1,4 +1,5 @@
 import { Recommendation } from '@/lib/types';
+import { Card } from '@/components/ui/card';
 import { Icons } from '@/components/icons';
 
 const categoryIcons = {
@@ -22,8 +23,8 @@ export function RecommendationCard({
 
   if (compact) {
     return (
-      <div className="glass rounded-lg p-4 border border-zinc-700 hover:border-zinc-600 transition-colors">
-        <div className="flex items-center gap-3">
+      <Card className="hover:border-zinc-600 transition-colors">
+        <div className="p-4 flex items-center gap-3">
           <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
             <Icon className="w-4 h-4 text-blue-400" />
           </div>
@@ -38,13 +39,13 @@ export function RecommendationCard({
             </div>
           </div>
         </div>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="glass rounded-lg p-4 border border-zinc-700 hover:border-zinc-600 transition-colors">
-      <div className="flex items-start gap-4">
+    <Card className="hover:border-zinc-600 transition-colors">
+      <div className="p-6 flex items-start gap-4">
         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
           <Icon className="w-5 h-5 text-blue-400" />
         </div>
@@ -80,23 +81,9 @@ export function RecommendationCard({
                 <span>{recommendation.caution}</span>
               </div>
             )}
-            
-            {recommendation.supportingActions && (
-              <div className="mt-2 pt-2 border-t border-zinc-800">
-                <p className="text-xs text-zinc-400 mb-1">Supporting actions:</p>
-                <ul className="space-y-1">
-                  {recommendation.supportingActions.map((action, i) => (
-                    <li key={i} className="text-xs text-zinc-400 flex items-start gap-1">
-                      <span className="text-zinc-500">•</span>
-                      <span>{action}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

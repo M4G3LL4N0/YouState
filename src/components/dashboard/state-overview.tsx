@@ -1,70 +1,68 @@
 import { DailyState } from '@/lib/types';
+import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 
-export function StateOverview({ state }: { state: DailyState }) {
+interface StateOverviewProps {
+  state: DailyState;
+}
+
+export function StateOverview({ state }: StateOverviewProps) {
   return (
-    <div className="glass rounded-xl border border-zinc-800 overflow-hidden">
-      <div className="grid grid-cols-2 divide-x divide-zinc-800">
-        {/* Focus quadrant */}
-        <div className="p-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-zinc-300">Focus</h3>
-            <MetricLevelBadge level={state.focus} />
-          </div>
-          <div className="h-2 bg-zinc-800 rounded-full mt-2 overflow-hidden">
-            <div 
-              className={`h-full ${
-                state.focus === 'high' ? 'bg-blue-500' :
-                state.focus === 'medium' ? 'bg-amber-500' : 'bg-red-500'
-              }`}
-              style={{ width: `${state.focus === 'high' ? 90 : state.focus === 'medium' ? 60 : 30}%` }}
-            />
-          </div>
-        </div>
-        
-        {/* Energy quadrant */}
-        <div className="p-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-zinc-300">Energy</h3>
-            <MetricLevelBadge level={state.energy} />
-          </div>
-          <div className="h-2 bg-zinc-800 rounded-full mt-2 overflow-hidden">
-            <div 
-              className={`h-full ${
-                state.energy === 'high' ? 'bg-blue-500' :
-                state.energy === 'medium' ? 'bg-amber-500' : 'bg-red-500'
-              }`}
-              style={{ width: `${state.energy === 'high' ? 90 : state.energy === 'medium' ? 60 : 30}%` }}
-            />
-          </div>
+    <Card className="col-span-2">
+      <div className="p-6">
+        <h2 className="text-xl font-semibold mb-6">Your Current State</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <MetricCard 
+            label="Energy" 
+            value={state.energy} 
+            description="Your current energy level"
+          />
+          <MetricCard 
+            label="Focus" 
+            value={state.focus}
+            description="Your ability to concentrate"
+          />
+          <MetricCard 
+            label="Hydration" 
+            value={state.hydration}
+            description="Your hydration status"
+          />
+          <MetricCard 
+            label="Stress" 
+            value={state.stressLoad}
+            description="Your stress level"
+          />
         </div>
       </div>
-
-      <div className="grid grid-cols-3 divide-x divide-zinc-800 border-t border-zinc-800">
-        {[
-          { label: 'Hydration', value: state.hydration },
-          { label: 'Crash Risk', value: state.crashRisk },
-          { label: 'Stress', value: state.stressLoad }
-        ].map((metric) => (
-          <div key={metric.label} className="p-3">
-            <h3 className="text-xs text-zinc-400">{metric.label}</h3>
-            <p className="text-sm font-medium mt-1 capitalize">{metric.value}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+    </Card>
   );
 }
 
-function MetricLevelBadge({ level }: { level: string }) {
-  const colorMap = {
-    high: 'bg-blue-500/20 text-blue-400',
-    medium: 'bg-amber-500/20 text-amber-400',
-    low: 'bg-red-500/20 text-red-400'
+function MetricCard({ 
+  label, 
+  value,
+  description
+}: { 
+  label: string; 
+  value: string;
+  description: string;
+}) {
+  const levelMap = {
+    low: 30,
+    medium: 60,
+    high: 90
   };
 
   return (
-    <span className={`text-xs px-2 py-0.5 rounded-full ${colorMap[level as keyof typeof colorMap] || ''}`}>
-      {level.toUpperCase()}
-    </span>
+    <div className="p-4 bg-zinc-900/50 rounded-lg">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-medium text-zinc-300">{label}</h3>
+        <span className="text-xs bg-zinc-800/50 text-zinc-400 px-2 py-1 rounded-full">
+          {value}
+        </span>
+      </div>
+      <Progress value={levelMap[value as keyof typeof levelMap] || 0} />
+      <p className="text-xs text-zinc-400 mt-2">{description}</p>
+    </div>
   );
 }
