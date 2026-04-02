@@ -1,8 +1,16 @@
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Create pulse schema
 CREATE SCHEMA IF NOT EXISTS pulse;
 
--- Enable Row Level Security
-ALTER SCHEMA pulse ENABLE ROW LEVEL SECURITY;
+-- Create auth.uid() function
+CREATE OR REPLACE FUNCTION auth.uid() 
+RETURNS uuid
+LANGUAGE sql STABLE
+AS $$
+  SELECT NULLIF(current_setting('request.jwt.claims', true)::json->>'sub', '')::uuid;
+$$;
 
 -- Create enum types
 CREATE TYPE pulse.metric_level AS ENUM ('low', 'medium', 'high');
@@ -120,17 +128,19 @@ BEFORE UPDATE ON pulse.user_settings
 FOR EACH ROW EXECUTE FUNCTION pulse.update_timestamp();
 
 -- Row Level Security Policies
+ALTER TABLE pulse.profiles ENABLE ROW LEVEL SECURITY;
+
 CREATE POLICY "Users can manage their own profiles"
 ON pulse.profiles
 FOR ALL
-TO authenticated
 USING (user_id = auth.uid())
 WITH CHECK (user_id = auth.uid());
+
+ALTER TABLE pulse.daily_states ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can manage their own daily states"
 ON pulse.daily_states
 FOR ALL
-TO authenticated
 USING (user_id = auth.uid())
 WITH CHECK (user_id = auth.uid());
 
