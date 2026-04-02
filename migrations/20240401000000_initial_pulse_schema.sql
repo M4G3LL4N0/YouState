@@ -35,10 +35,13 @@ CREATE TYPE pulse.log_entry_type AS ENUM ('state', 'action', 'event');
 CREATE TABLE pulse.profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  age INT CHECK (age >= 0),
-  weight NUMERIC CHECK (weight > 0), -- kg
-  height NUMERIC CHECK (height > 0), -- cm
+  name TEXT NOT NULL CHECK (
+    name ~ '^[a-zA-Z \-'']+$' AND 
+    length(name) BETWEEN 2 AND 100
+  ),
+  age INT CHECK (age BETWEEN 13 AND 120),
+  weight NUMERIC CHECK (weight BETWEEN 30 AND 300), -- kg
+  height NUMERIC CHECK (height BETWEEN 100 AND 250), -- cm
   lifestyle pulse.lifestyle_type NOT NULL,
   goals pulse.goal_type[] NOT NULL DEFAULT '{}',
   caffeine_habits pulse.caffeine_habits NOT NULL,
@@ -180,16 +183,26 @@ ON pulse.waitlist
 FOR INSERT
 TO public
 WITH CHECK (
-  -- Required fields
+  -- Required and validated fields
   email IS NOT NULL AND
+  length(email) <= 255 AND
   email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' AND
   created_at IS NOT NULL AND
+  created_at <= (NOW() + interval '1 minute') AND
   
   -- Optional but validated fields
-  (name IS NULL OR (name !~ '^\s*$' AND length(name) <= 100)) AND
-  (role IS NULL OR (role !~ '^\s*$' AND length(role) <= 50)) AND
+  (name IS NULL OR (
+    name !~ '^\s*$' AND 
+    length(name) <= 100 AND
+    name ~ '^[a-zA-Z0-9 \-\.'']+$'
+  )) AND
+  (role IS NULL OR (
+    role !~ '^\s*$' AND 
+    length(role) <= 50 AND
+    role ~ '^[a-zA-Z0-9 \-]+$'
+  )) AND
   
-  -- Restricted fields
+  -- Restricted fields (can only be set server-side)
   ip_address IS NULL AND
   user_agent IS NULL AND
   referrer IS NULL
@@ -198,14 +211,22 @@ WITH CHECK (
 CREATE INDEX idx_waitlist_email ON pulse.waitlist(email);
 
 -- Timestamp update function
--- Function to automatically update timestamp fields
--- Used by BEFORE UPDATE triggers to maintain updated_at fields
 CREATE OR REPLACE FUNCTION pulse.update_timestamp()
 RETURNS TRIGGER AS $$
+DECLARE
+  context TEXT;
 BEGIN
-  -- Safety check
+  -- Validate input
   IF NEW IS NULL THEN
-    RAISE EXCEPTION 'Trigger function cannot be called with NULL record';
+    RAISE EXCEPTION 'Trigger function cannot be called with NULL record'
+    USING HINT = 'Check your UPDATE statement';
+  END IF;
+  
+  -- Prevent timestamp tampering
+  IF TG_OP = 'UPDATE' AND OLD.updated_at IS NOT NULL AND 
+     NEW.updated_at IS DISTINCT FROM OLD.updated_at THEN
+    RAISE EXCEPTION 'Cannot manually modify updated_at field'
+    USING HINT = 'Remove updated_at from your UPDATE statement';
   END IF;
   
   -- Update timestamp
@@ -214,8 +235,8 @@ BEGIN
   
 EXCEPTION
   WHEN OTHERS THEN
-    -- Log error but allow operation to continue
-    RAISE WARNING 'Error in update_timestamp: %', SQLERRM;
+    GET STACKED DIAGNOSTICS context = PG_EXCEPTION_CONTEXT;
+    RAISE WARNING 'Error in update_timestamp: % Context: %', SQLERRM, context;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
