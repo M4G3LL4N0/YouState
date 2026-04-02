@@ -10,7 +10,7 @@ interface AppShellProps {
 export function AppShell({ children, className }: AppShellProps) {
   return (
     <div className={cn(
-      "flex min-h-screen bg-zinc-950 text-zinc-50",
+      "flex flex-col min-h-screen bg-zinc-950 text-zinc-50",
       className
     )}>
       {/* Sidebar */}
@@ -42,6 +42,52 @@ export function AppShell({ children, className }: AppShellProps) {
           {children}
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="glass border-t border-zinc-800 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Zap className="w-6 h-6 text-blue-500" />
+              <span className="text-xl font-semibold">Pulse</span>
+            </div>
+            <p className="text-zinc-400 text-sm">
+              The operating system for human performance.
+            </p>
+          </div>
+          
+          <div>
+            <h4 className="text-zinc-300 font-medium mb-4">Product</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li><a href="/features" className="hover:text-zinc-50">Features</a></li>
+              <li><a href="/pricing" className="hover:text-zinc-50">Pricing</a></li>
+              <li><a href="/integrations" className="hover:text-zinc-50">Integrations</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-zinc-300 font-medium mb-4">Company</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li><a href="/about" className="hover:text-zinc-50">About</a></li>
+              <li><a href="/careers" className="hover:text-zinc-50">Careers</a></li>
+              <li><a href="/press" className="hover:text-zinc-50">Press</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-zinc-300 font-medium mb-4">Resources</h4>
+            <ul className="space-y-2 text-sm text-zinc-400">
+              <li><a href="/blog" className="hover:text-zinc-50">Blog</a></li>
+              <li><a href="/research" className="hover:text-zinc-50">Research</a></li>
+              <li><a href="/support" className="hover:text-zinc-50">Support</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="border-t border-zinc-800 py-4 text-center text-sm text-zinc-400">
+          © {new Date().getFullYear()} Pulse Technologies. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }

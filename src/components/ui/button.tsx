@@ -10,12 +10,16 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-blue-600 text-white hover:bg-blue-500',
+        secondary: 'bg-zinc-800 text-zinc-100 hover:bg-zinc-700',
+        outline: 'border border-zinc-700 bg-transparent hover:bg-zinc-800/50',
         ghost: 'hover:bg-zinc-800/50',
+        premium: 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-90',
       },
       size: {
         default: 'h-10 py-2 px-4',
         sm: 'h-9 px-3',
         lg: 'h-11 px-8',
+        xl: 'h-14 px-12 text-lg',
       },
     },
     defaultVariants: {
