@@ -1,20 +1,10 @@
 import { AppShell } from '@/components/app-shell';
-import { DailyState } from '@/lib/types';
+import { mockDailyStates, mockProfiles, mockTimeline } from '@/lib/mock-data';
+import { generateRecommendations } from '@/lib/recommendation-engine';
 
-// Mock data - will be replaced with real data fetching
-const currentState: DailyState = {
-  energy: 'medium',
-  focus: 'high',
-  hunger: 'rising',
-  crashRisk: 'low',
-  hydration: 'ok',
-  sleepDebt: 'medium',
-  caffeineLoad: 'moderate',
-  physicalDemand: 'medium',
-  cognitiveDemand: 'high',
-  stressLoad: 'low',
-  lastUpdated: new Date(),
-};
+const currentState = mockDailyStates.morningPeak;
+const currentProfile = mockProfiles.knowledgeWorker;
+const recommendations = generateRecommendations(currentState, currentProfile);
 
 export default function DashboardPage() {
   return (
@@ -50,16 +40,16 @@ export default function DashboardPage() {
         <section className="bg-zinc-900/50 backdrop-blur-sm rounded-xl p-6 border border-zinc-800">
           <h2 className="text-xl font-semibold mb-4">What To Do Next</h2>
           <div className="space-y-3">
-            <RecommendationCard 
-              type="hydrate"
-              message="Drink 300ml water"
-              priority={1}
-            />
-            <RecommendationCard 
-              type="eat"
-              message="Have a protein-rich snack"
-              priority={2}
-            />
+            {recommendations.map((rec) => (
+              <RecommendationCard
+                key={rec.message}
+                type={rec.category}
+                message={rec.message}
+                priority={rec.priority}
+                reasoning={rec.reasoning}
+                caution={rec.caution}
+              />
+            ))}
           </div>
         </section>
         {/* Daily Timeline */}
@@ -124,19 +114,33 @@ function MetricCard({ label, value }: { label: string; value: string }) {
   );
 }
 
-function RecommendationCard({ type, message, priority }: { 
+function RecommendationCard({ 
+  type, 
+  message, 
+  priority,
+  reasoning,
+  caution 
+}: { 
   type: string; 
   message: string; 
-  priority: number 
+  priority: number;
+  reasoning?: string;
+  caution?: string;
 }) {
   return (
     <div className="flex items-center gap-4 p-3 bg-zinc-800/50 rounded-lg">
       <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
         {priority}
       </div>
-      <div>
+      <div className="flex-1">
         <p className="font-medium">{message}</p>
         <p className="text-sm text-zinc-400 capitalize">{type}</p>
+        {reasoning && (
+          <p className="text-xs text-zinc-500 mt-1">{reasoning}</p>
+        )}
+        {caution && (
+          <p className="text-xs text-red-400 mt-1">⚠️ {caution}</p>
+        )}
       </div>
     </div>
   );
