@@ -36,7 +36,11 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 # Required for email auth
 NEXT_PUBLIC_SUPABASE_EMAIL_REDIRECT_URL=http://localhost:3000/auth/callback
 ```
-4. Run the development server:
+4. Apply database migrations:
+```bash
+psql -U postgres -h your-supabase-db-host -d your-db-name -f migrations/20240401000000_initial_pulse_schema.sql
+```
+5. Run the development server:
 ```bash
 npm run dev
 ```
