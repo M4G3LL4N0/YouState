@@ -35,7 +35,31 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 # Required for email auth
 NEXT_PUBLIC_SUPABASE_EMAIL_REDIRECT_URL=http://localhost:3000/auth/callback
+
+# Optional analytics providers
+NEXT_PUBLIC_POSTHOG_KEY=your-posthog-key
+NEXT_PUBLIC_SEGMENT_KEY=your-segment-key
+NEXT_PUBLIC_AMPLITUDE_KEY=your-amplitude-key
 ```
+
+### Waitlist Setup
+
+The waitlist feature requires the following database setup:
+
+1. Create the waitlist table in Supabase using the migration file
+2. Enable Row Level Security with public insert permissions
+3. Create an index on the email column for faster lookups
+
+### Analytics Setup
+
+Pulse includes a lightweight analytics abstraction that supports multiple providers:
+
+- PostHog
+- Segment
+- Amplitude
+- Supabase (built-in)
+
+To enable analytics, set the appropriate environment variables for your chosen provider(s).
 4. Apply database migrations:
 ```bash
 psql -U postgres -h your-supabase-db-host -d your-db-name -f migrations/20240401000000_initial_pulse_schema.sql

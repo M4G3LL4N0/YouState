@@ -175,3 +175,26 @@ FOR ALL
 TO authenticated
 USING (user_id = auth.uid())
 WITH CHECK (user_id = auth.uid());
+
+-- Waitlist table
+CREATE TABLE pulse.waitlist (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL,
+  name TEXT,
+  role TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  ip_address TEXT,
+  user_agent TEXT,
+  referrer TEXT
+);
+
+CREATE INDEX idx_waitlist_email ON pulse.waitlist(email);
+
+-- Waitlist RLS policy
+ALTER TABLE pulse.waitlist ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public waitlist submissions"
+ON pulse.waitlist
+FOR INSERT
+TO public
+WITH CHECK (true);
