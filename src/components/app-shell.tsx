@@ -10,17 +10,17 @@ interface AppShellProps {
 export function AppShell({ children, className }: AppShellProps) {
   return (
     <div className={cn(
-      "flex flex-col min-h-screen bg-zinc-950 text-zinc-50",
+      "flex flex-col min-h-screen bg-zinc-950 text-zinc-50 antialiased",
       className
     )}>
       {/* Sidebar */}
-      <aside className="w-64 border-r border-zinc-800 p-6">
-        <div className="flex items-center gap-2 mb-8">
-          <Zap className="w-6 h-6 text-blue-500" />
-          <span className="text-xl font-semibold">Pulse</span>
+      <aside className="w-64 border-r border-zinc-800/50 bg-zinc-950/50 backdrop-blur-lg p-6">
+        <div className="flex items-center gap-3 mb-10">
+          <Zap className="w-6 h-6 text-blue-400" />
+          <span className="text-xl font-semibold tracking-tight bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">Pulse</span>
         </div>
         
-        <nav className="space-y-1">
+        <nav className="space-y-2">
           <NavLink href="/app" icon={Home}>Dashboard</NavLink>
           <NavLink href="/app/history" icon={Clock}>History</NavLink>
           <NavLink href="/app/settings" icon={Settings}>Settings</NavLink>

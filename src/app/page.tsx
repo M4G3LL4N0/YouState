@@ -4,10 +4,10 @@ export default function Home() {
       <main className="container mx-auto px-4 py-16 md:py-24">
         {/* Hero Section */}
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
-            The Operating System for Human Performance<span className="text-blue-500">.</span>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
+            The Operating System <br />for <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">Human Performance</span>
           </h1>
-          <p className="text-xl md:text-2xl text-zinc-300 mb-12">
+          <p className="text-xl md:text-2xl text-zinc-400 mb-12 max-w-2xl mx-auto leading-relaxed">
             Pulse combines real-time biometrics with adaptive AI to optimize your energy, focus, and recovery - delivering personalized recommendations when you need them most.
           </p>
           
@@ -101,12 +101,12 @@ function FeatureCard({ icon, title, description }: {
   description: string 
 }) {
   return (
-    <div className="glass p-8 rounded-xl">
-      <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-4">
+    <div className="bg-zinc-900/50 border border-zinc-800/50 p-8 rounded-2xl backdrop-blur-sm hover:bg-zinc-900/70 transition-all duration-300">
+      <div className="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 border border-blue-500/10">
         {/* Icon would be dynamically rendered based on prop */}
       </div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-zinc-400">{description}</p>
+      <h3 className="text-xl font-semibold mb-3 text-zinc-100">{title}</h3>
+      <p className="text-zinc-400 leading-relaxed">{description}</p>
     </div>
   );
 }
