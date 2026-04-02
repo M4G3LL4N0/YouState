@@ -2,7 +2,7 @@ export type MetricLevel = 'low' | 'medium' | 'high';
 export type HungerLevel = 'low' | 'rising' | 'high';
 export type HydrationLevel = 'low' | 'ok' | 'good';
 
-export type DailyState = {
+export interface DailyState {
   energy: MetricLevel;
   focus: MetricLevel;
   hunger: HungerLevel;
@@ -14,7 +14,42 @@ export type DailyState = {
   cognitiveDemand: MetricLevel;
   stressLoad: MetricLevel;
   lastUpdated: Date;
-};
+}
+
+export interface ApiResponse<T> {
+  data?: T;
+  error?: {
+    message: string;
+    code: string;
+  };
+  success: boolean;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  page: number;
+  pageSize: number;
+  total: number;
+  hasMore: boolean;
+}
+
+export interface UserPreferences {
+  notifications: {
+    email: boolean;
+    push: boolean;
+    sms: boolean;
+  };
+  privacy: {
+    dataSharing: boolean;
+    analytics: boolean;
+  };
+  integrations: {
+    appleHealth: boolean;
+    googleFit: boolean;
+    wearables: boolean;
+  };
+  updatedAt: Date;
+}
 
 export type RecommendationType = 
   | 'eat' 
