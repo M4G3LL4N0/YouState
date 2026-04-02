@@ -26,9 +26,15 @@ Pulse is a universal human optimization OS that adapts nutrition, energy, recove
 ```bash
 npm install
 ```
-3. Copy environment variables:
+3. Create `.env.local` file:
 ```bash
-cp .env.example .env.local
+# Required
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# Required for email auth
+NEXT_PUBLIC_SUPABASE_EMAIL_REDIRECT_URL=http://localhost:3000/auth/callback
 ```
 4. Run the development server:
 ```bash
