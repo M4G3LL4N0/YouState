@@ -20,5 +20,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/app', request.url));
   }
 
+  // Check onboarding status for app routes
+  if (session && request.nextUrl.pathname.startsWith('/app')) {
+    const { data: profile } = await supabase
+      .from('pulse.profiles')
+      .select('id')
+      .eq('user_id', session.user.id)
+      .single();
+
+    // Redirect to onboarding if profile not complete
+    if (!profile && !request.nextUrl.pathname.startsWith('/app/onboarding')) {
+      return NextResponse.redirect(new URL('/app/onboarding', request.url));
+    }
+  }
+
   return response;
 }

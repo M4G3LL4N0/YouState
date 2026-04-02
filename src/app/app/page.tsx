@@ -1,10 +1,27 @@
 import { AppShell } from '@/components/app-shell';
-import { mockDailyStates, mockProfiles, mockTimeline } from '@/lib/mock-data';
+import { mockDailyStates, mockTimeline } from '@/lib/mock-data';
 import { generateRecommendations } from '@/lib/recommendation-engine';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const currentState = mockDailyStates.morningPeak;
-const currentProfile = mockProfiles.knowledgeWorker;
-const recommendations = generateRecommendations(currentState, currentProfile);
+
+async function getProfile() {
+  const supabase = createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) return null;
+
+  const { data: profile } = await supabase
+    .from('pulse.profiles')
+    .select('*')
+    .eq('user_id', user.id)
+    .single();
+
+  return profile;
+}
+
+const profile = await getProfile();
+const recommendations = profile ? generateRecommendations(currentState, profile) : [];
 
 export default function DashboardPage() {
   return (
