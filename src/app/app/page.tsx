@@ -1,15 +1,12 @@
 import { AppShell } from '@/components/app-shell';
-import { mockDailyStates, mockTimeline } from '@/lib/mock-data';
 import { generateRecommendations } from '@/lib/recommendation-engine';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-const currentState = mockDailyStates.morningPeak;
-
-async function getProfile() {
+async function getLatestData() {
   const supabase = createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   
-  if (!user) return null;
+  if (!user) return { profile: null, state: null };
 
   const { data: profile } = await supabase
     .from('pulse.profiles')
@@ -17,11 +14,21 @@ async function getProfile() {
     .eq('user_id', user.id)
     .single();
 
-  return profile;
+  const { data: state } = await supabase
+    .from('pulse.daily_states')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('recorded_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  return { profile, state };
 }
 
-const profile = await getProfile();
-const recommendations = profile ? generateRecommendations(currentState, profile) : [];
+const { profile, state } = await getLatestData();
+const recommendations = profile && state 
+  ? generateRecommendations(state, profile) 
+  : [];
 
 export default function DashboardPage() {
   const primaryRecommendation = recommendations[0];
@@ -68,8 +75,11 @@ export default function DashboardPage() {
         {/* Timeline pattern */}
         <TimelineSection logs={mockTimeline} />
 
-        {/* Quick check-in */}
-        <QuickCheckIn />
+        {/* Check-in and history */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <QuickCheckIn />
+          <RecentCheckIns />
+        </div>
       </div>
     </AppShell>
         {/* Daily Timeline */}
