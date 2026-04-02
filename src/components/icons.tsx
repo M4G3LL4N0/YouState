@@ -10,7 +10,8 @@ import {
   Utensils,
   Sparkle,
   Clock,
-  Timer
+  Timer,
+  Zap
 } from 'lucide-react';
 
 export const Icons = {
@@ -25,5 +26,22 @@ export const Icons = {
   utensils: Utensils,
   sparkle: Sparkle,
   clock: Clock,
-  timer: Timer
+  timer: Timer,
+  zap: Zap
+};
+
+export {
+  Loader2,
+  Check,
+  AlertTriangle,
+  Droplet,
+  Coffee,
+  Target,
+  Moon,
+  Activity,
+  Utensils,
+  Sparkle,
+  Clock,
+  Timer,
+  Zap
 };
