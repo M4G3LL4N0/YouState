@@ -16,10 +16,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Pulse - Human Performance OS",
-    template: "%s | Pulse"
+    default: "YouState - Real-Time Human Optimization",
+    template: "%s | YouState"
   },
-  description: "The operating system for human performance. Optimize your energy, focus, and recovery with real-time adaptive intelligence.",
+  description: "The decision layer for intelligent daily performance. Your state determines what matters next.",
   keywords: [
     "productivity",
     "energy optimization",
@@ -70,7 +70,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-50 selection:bg-blue-500/30 selection:text-blue-200">
+      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-50 selection:bg-zinc-600/50">
         {children}
       </body>
     </html>

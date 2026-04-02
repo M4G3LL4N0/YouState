@@ -4,11 +4,16 @@ export default function Home() {
       <main className="container mx-auto px-4 py-16 md:py-24">
         {/* Hero Section */}
         <div className="max-w-4xl mx-auto text-center">
+          <div className="space-y-2 mb-8">
+            <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-zinc-800 text-zinc-300">
+              Adaptive Human Performance
+            </span>
+          </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
-            The Operating System <br />for <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">Human Performance</span>
+            Your State <br />Determines <span className="text-zinc-300">What Matters Next</span>
           </h1>
           <p className="text-xl md:text-2xl text-zinc-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Pulse combines real-time biometrics with adaptive AI to optimize your energy, focus, and recovery - delivering personalized recommendations when you need them most.
+            YouState's real-time optimization engine adapts energy, focus, and recovery guidance to your actual life as it happens.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -31,18 +36,18 @@ export default function Home() {
         <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
           <FeatureCard 
             icon="activity"
-            title="Real-Time Optimization" 
-            description="Continuous biometric monitoring and adaptive recommendations tailored to your current state."
+            title="State Engine" 
+            description="A real-time model of your physical, cognitive, and emotional state."
           />
           <FeatureCard 
             icon="zap"
-            title="Personalized Intelligence" 
-            description="AI that learns your unique patterns and adapts to your lifestyle and goals."
+            title="Adaptive Guidance" 
+            description="Smart recommendations that evolve with your changing context."
           />
           <FeatureCard 
             icon="clock"
-            title="Proactive Guidance" 
-            description="Anticipate energy crashes and optimize performance before you need to."
+            title="Future Awareness" 
+            description="Smart anticipation of optimal times for key activities."
           />
         </div>
 
