@@ -25,11 +25,16 @@ export type RecommendationType =
   | 'movement';
 
 export type Recommendation = {
-  type: RecommendationType;
+  title: string;
+  action: string;
+  category: RecommendationType;
   priority: number;
-  message: string;
+  confidence: number;
+  reasoning: string;
+  caution?: string;
+  idealTime?: string;
   duration?: number;
-  details?: string;
+  supportingActions?: string[];
 };
 
 export type PrimaryGoal = 'energy' | 'focus' | 'recovery' | 'performance' | 'balance';

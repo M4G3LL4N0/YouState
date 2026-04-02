@@ -8,7 +8,9 @@ import {
   Moon,
   Activity,
   Utensils,
-  Sparkle 
+  Sparkle,
+  Clock,
+  Timer
 } from 'lucide-react';
 
 export const Icons = {
@@ -21,5 +23,7 @@ export const Icons = {
   moon: Moon,
   activity: Activity,
   utensils: Utensils,
-  sparkle: Sparkle
+  sparkle: Sparkle,
+  clock: Clock,
+  timer: Timer
 };
