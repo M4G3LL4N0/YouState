@@ -24,51 +24,54 @@ const profile = await getProfile();
 const recommendations = profile ? generateRecommendations(currentState, profile) : [];
 
 export default function DashboardPage() {
+  const primaryRecommendation = recommendations[0];
+  const secondaryRecommendations = recommendations.slice(1, 3);
+
   return (
     <AppShell>
-      <div className="space-y-8">
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Your State</h1>
-          <p className="text-zinc-400">
-            Last updated: {currentState.lastUpdated.toLocaleTimeString()}
-          </p>
-        </header>
+      <div className="space-y-6">
+        {/* Header with status */}
+        <DashboardHeader state={currentState} profile={profile} />
 
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-zinc-900/50 backdrop-blur-sm rounded-xl p-6 border border-zinc-800">
-            <h2 className="text-xl font-semibold mb-4">Vitals</h2>
-            <div className="space-y-4">
-              <MetricCard label="Energy" value={currentState.energy} />
-              <MetricCard label="Focus" value={currentState.focus} />
-              <MetricCard label="Crash Risk" value={currentState.crashRisk} />
+        {/* Current state overview */}
+        <StateOverview state={currentState} />
+
+        {/* Main recommendation area */}
+        {primaryRecommendation ? (
+          <>
+            <PrimaryRecommendation recommendation={primaryRecommendation} />
+            
+            {/* Supporting recommendations */}
+            {secondaryRecommendations.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {secondaryRecommendations.map((rec) => (
+                  <RecommendationCard
+                    key={rec.message}
+                    recommendation={rec}
+                    compact
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="glass rounded-xl p-6 border border-zinc-800">
+            <div className="text-center py-8">
+              <p className="text-zinc-400">No recommendations yet</p>
+              <p className="text-sm text-zinc-500 mt-2">
+                Complete your first check-in to get personalized suggestions
+              </p>
             </div>
           </div>
+        )}
 
-          <div className="bg-zinc-900/50 backdrop-blur-sm rounded-xl p-6 border border-zinc-800">
-            <h2 className="text-xl font-semibold mb-4">Needs</h2>
-            <div className="space-y-4">
-              <MetricCard label="Hydration" value={currentState.hydration} />
-              <MetricCard label="Hunger" value={currentState.hunger} />
-              <MetricCard label="Sleep Debt" value={currentState.sleepDebt} />
-            </div>
-          </div>
-        </section>
+        {/* Timeline pattern */}
+        <TimelineSection logs={mockTimeline} />
 
-        <section className="bg-zinc-900/50 backdrop-blur-sm rounded-xl p-6 border border-zinc-800">
-          <h2 className="text-xl font-semibold mb-4">What To Do Next</h2>
-          <div className="space-y-3">
-            {recommendations.map((rec) => (
-              <RecommendationCard
-                key={rec.message}
-                type={rec.category}
-                message={rec.message}
-                priority={rec.priority}
-                reasoning={rec.reasoning}
-                caution={rec.caution}
-              />
-            ))}
-          </div>
-        </section>
+        {/* Quick check-in */}
+        <QuickCheckIn />
+      </div>
+    </AppShell>
         {/* Daily Timeline */}
         <section className="glass rounded-xl p-6 border border-zinc-800 mt-8">
           <h2 className="text-xl font-semibold mb-4">Daily Timeline</h2>
