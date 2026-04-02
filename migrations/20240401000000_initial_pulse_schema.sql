@@ -11,6 +11,11 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA pulse GRANT ALL ON TABLES TO authenticated, s
 ALTER DEFAULT PRIVILEGES IN SCHEMA pulse GRANT ALL ON ROUTINES TO authenticated, service_role;
 ALTER DEFAULT PRIVILEGES IN SCHEMA pulse GRANT ALL ON SEQUENCES TO authenticated, service_role;
 
+-- Explicitly grant permissions on existing tables (for this migration)
+GRANT ALL ON ALL TABLES IN SCHEMA pulse TO authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA pulse TO authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA pulse TO authenticated, service_role;
+
 -- Create enum types
 CREATE TYPE pulse.metric_level AS ENUM ('low', 'medium', 'high');
 CREATE TYPE pulse.hunger_level AS ENUM ('low', 'rising', 'high');
@@ -169,17 +174,22 @@ CREATE TABLE pulse.waitlist (
 
 ALTER TABLE pulse.waitlist ENABLE ROW LEVEL SECURITY;
 
--- Allow public to submit to waitlist but only with specific fields
+-- Allow public to submit to waitlist but only with specific validated fields
 CREATE POLICY "Public waitlist submissions"
 ON pulse.waitlist
 FOR INSERT
 TO public
 WITH CHECK (
+  -- Required fields
   email IS NOT NULL AND
+  email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' AND
   created_at IS NOT NULL AND
-  -- Restrict writable columns
-  (name IS NULL OR name !~ '^\s*$') AND
-  (role IS NULL OR role !~ '^\s*$') AND
+  
+  -- Optional but validated fields
+  (name IS NULL OR (name !~ '^\s*$' AND length(name) <= 100)) AND
+  (role IS NULL OR (role !~ '^\s*$' AND length(role) <= 50)) AND
+  
+  -- Restricted fields
   ip_address IS NULL AND
   user_agent IS NULL AND
   referrer IS NULL
@@ -188,21 +198,27 @@ WITH CHECK (
 CREATE INDEX idx_waitlist_email ON pulse.waitlist(email);
 
 -- Timestamp update function
+-- Function to automatically update timestamp fields
+-- Used by BEFORE UPDATE triggers to maintain updated_at fields
 CREATE OR REPLACE FUNCTION pulse.update_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
+  -- Safety check
   IF NEW IS NULL THEN
     RAISE EXCEPTION 'Trigger function cannot be called with NULL record';
   END IF;
   
+  -- Update timestamp
   NEW.updated_at = NOW();
   RETURN NEW;
+  
 EXCEPTION
   WHEN OTHERS THEN
+    -- Log error but allow operation to continue
     RAISE WARNING 'Error in update_timestamp: %', SQLERRM;
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Create triggers after all tables exist
 CREATE TRIGGER update_profile_timestamp
