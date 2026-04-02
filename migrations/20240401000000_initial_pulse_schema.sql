@@ -1,6 +1,17 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Create auth schema
+CREATE SCHEMA IF NOT EXISTS auth;
+
+-- Create auth.uid() function
+CREATE OR REPLACE FUNCTION auth.uid() 
+RETURNS uuid
+LANGUAGE sql STABLE
+AS $$
+  SELECT NULLIF(current_setting('request.jwt.claims', true)::json->>'sub', '')::uuid;
+$$;
+
 -- Create pulse schema
 CREATE SCHEMA IF NOT EXISTS pulse;
 
@@ -128,14 +139,16 @@ BEFORE UPDATE ON pulse.user_settings
 FOR EACH ROW EXECUTE FUNCTION pulse.update_timestamp();
 
 -- Row Level Security Policies
+-- Enable RLS and create policies for profiles
 ALTER TABLE pulse.profiles ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can manage their own profiles"
+CREATE POLICY "Users can manage their own profiles" 
 ON pulse.profiles
 FOR ALL
 USING (user_id = auth.uid())
 WITH CHECK (user_id = auth.uid());
 
+-- Enable RLS and create policies for daily states  
 ALTER TABLE pulse.daily_states ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can manage their own daily states"
@@ -144,10 +157,11 @@ FOR ALL
 USING (user_id = auth.uid())
 WITH CHECK (user_id = auth.uid());
 
+ALTER TABLE pulse.recommendations ENABLE ROW LEVEL SECURITY;
+
 CREATE POLICY "Users can manage their own recommendations"
 ON pulse.recommendations
 FOR ALL
-TO authenticated
 USING (user_id = auth.uid())
 WITH CHECK (user_id = auth.uid());
 
