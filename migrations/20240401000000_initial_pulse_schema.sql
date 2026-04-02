@@ -47,6 +47,7 @@ CREATE TABLE pulse.profiles (
 
 ALTER TABLE pulse.profiles ENABLE ROW LEVEL SECURITY;
 
+-- Allow authenticated users full access to their own profile records
 CREATE POLICY "Users can manage their own profiles" 
 ON pulse.profiles
 FOR ALL
@@ -168,11 +169,21 @@ CREATE TABLE pulse.waitlist (
 
 ALTER TABLE pulse.waitlist ENABLE ROW LEVEL SECURITY;
 
+-- Allow public to submit to waitlist but only with specific fields
 CREATE POLICY "Public waitlist submissions"
 ON pulse.waitlist
 FOR INSERT
 TO public
-WITH CHECK (true);
+WITH CHECK (
+  email IS NOT NULL AND
+  created_at IS NOT NULL AND
+  -- Restrict writable columns
+  (name IS NULL OR name !~ '^\s*$') AND
+  (role IS NULL OR role !~ '^\s*$') AND
+  ip_address IS NULL AND
+  user_agent IS NULL AND
+  referrer IS NULL
+);
 
 CREATE INDEX idx_waitlist_email ON pulse.waitlist(email);
 
@@ -180,8 +191,16 @@ CREATE INDEX idx_waitlist_email ON pulse.waitlist(email);
 CREATE OR REPLACE FUNCTION pulse.update_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
+  IF NEW IS NULL THEN
+    RAISE EXCEPTION 'Trigger function cannot be called with NULL record';
+  END IF;
+  
   NEW.updated_at = NOW();
   RETURN NEW;
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE WARNING 'Error in update_timestamp: %', SQLERRM;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
