@@ -1,24 +1,15 @@
--- Enable UUID extension
+-- Enable required extensions
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- Create auth schema if not exists
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_namespace WHERE nspname = 'auth') THEN
-    CREATE SCHEMA auth;
-  END IF;
-END $$;
-
--- Create auth.uid() function if not exists
-CREATE OR REPLACE FUNCTION auth.uid() 
-RETURNS uuid
-LANGUAGE sql STABLE
-AS $$
-  SELECT NULLIF(current_setting('request.jwt.claims', true)::json->>'sub', '')::uuid;
-$$;
 
 -- Create pulse schema
 CREATE SCHEMA IF NOT EXISTS pulse;
+
+-- Grant permissions to Supabase roles
+GRANT USAGE ON SCHEMA pulse TO authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA pulse GRANT ALL ON TABLES TO authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA pulse GRANT ALL ON ROUTINES TO authenticated, service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA pulse GRANT ALL ON SEQUENCES TO authenticated, service_role;
 
 -- Create enum types
 CREATE TYPE pulse.metric_level AS ENUM ('low', 'medium', 'high');
@@ -54,6 +45,15 @@ CREATE TABLE pulse.profiles (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE pulse.profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage their own profiles" 
+ON pulse.profiles
+FOR ALL
+TO authenticated
+USING (user_id = (SELECT auth.uid()))
+WITH CHECK (user_id = (SELECT auth.uid()));
+
 CREATE INDEX idx_profiles_user_id ON pulse.profiles(user_id);
 
 -- Daily states table
@@ -73,6 +73,15 @@ CREATE TABLE pulse.daily_states (
   recorded_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE pulse.daily_states ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage their own daily states"
+ON pulse.daily_states
+FOR ALL
+TO authenticated
+USING (user_id = (SELECT auth.uid()))
+WITH CHECK (user_id = (SELECT auth.uid()));
+
 CREATE INDEX idx_daily_states_user_id ON pulse.daily_states(user_id);
 
 -- Recommendations table
@@ -88,6 +97,15 @@ CREATE TABLE pulse.recommendations (
   generated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE pulse.recommendations ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage their own recommendations"
+ON pulse.recommendations
+FOR ALL
+TO authenticated
+USING (user_id = (SELECT auth.uid()))
+WITH CHECK (user_id = (SELECT auth.uid()));
+
 CREATE INDEX idx_recommendations_user_id ON pulse.recommendations(user_id);
 
 -- Daily logs table
@@ -99,6 +117,15 @@ CREATE TABLE pulse.daily_logs (
   details JSONB,
   logged_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE pulse.daily_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage their own daily logs"
+ON pulse.daily_logs
+FOR ALL
+TO authenticated
+USING (user_id = (SELECT auth.uid()))
+WITH CHECK (user_id = (SELECT auth.uid()));
 
 CREATE INDEX idx_daily_logs_user_id ON pulse.daily_logs(user_id);
 
@@ -116,67 +143,18 @@ CREATE TABLE pulse.user_settings (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_user_settings_user_id ON pulse.user_settings(user_id);
-
--- Update triggers
-CREATE OR REPLACE FUNCTION pulse.update_timestamp()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_profile_timestamp
-BEFORE UPDATE ON pulse.profiles
-FOR EACH ROW EXECUTE FUNCTION pulse.update_timestamp();
-
-CREATE TRIGGER update_user_settings_timestamp
-BEFORE UPDATE ON pulse.user_settings
-FOR EACH ROW EXECUTE FUNCTION pulse.update_timestamp();
-
--- Row Level Security Policies
--- Enable RLS and create policies for profiles
-ALTER TABLE pulse.profiles ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can manage their own profiles" 
-ON pulse.profiles
-FOR ALL
-USING (auth.uid() = user_id)
-WITH CHECK (auth.uid() = user_id);
-
--- Enable RLS and create policies for daily states  
-ALTER TABLE pulse.daily_states ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can manage their own daily states"
-ON pulse.daily_states
-FOR ALL
-USING (user_id = auth.uid())
-WITH CHECK (user_id = auth.uid());
-
-ALTER TABLE pulse.recommendations ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users can manage their own recommendations"
-ON pulse.recommendations
-FOR ALL
-USING (user_id = auth.uid())
-WITH CHECK (user_id = auth.uid());
-
-CREATE POLICY "Users can manage their own daily logs"
-ON pulse.daily_logs
-FOR ALL
-TO authenticated
-USING (user_id = auth.uid())
-WITH CHECK (user_id = auth.uid());
+ALTER TABLE pulse.user_settings ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can manage their own settings"
 ON pulse.user_settings
 FOR ALL
 TO authenticated
-USING (user_id = auth.uid())
-WITH CHECK (user_id = auth.uid());
+USING (user_id = (SELECT auth.uid()))
+WITH CHECK (user_id = (SELECT auth.uid()));
 
--- Waitlist table
+CREATE INDEX idx_user_settings_user_id ON pulse.user_settings(user_id);
+
+-- Waitlist table (publicly writable)
 CREATE TABLE pulse.waitlist (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email TEXT NOT NULL,
@@ -188,9 +166,6 @@ CREATE TABLE pulse.waitlist (
   referrer TEXT
 );
 
-CREATE INDEX idx_waitlist_email ON pulse.waitlist(email);
-
--- Waitlist RLS policy
 ALTER TABLE pulse.waitlist ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Public waitlist submissions"
@@ -198,3 +173,23 @@ ON pulse.waitlist
 FOR INSERT
 TO public
 WITH CHECK (true);
+
+CREATE INDEX idx_waitlist_email ON pulse.waitlist(email);
+
+-- Timestamp update function
+CREATE OR REPLACE FUNCTION pulse.update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create triggers after all tables exist
+CREATE TRIGGER update_profile_timestamp
+BEFORE UPDATE ON pulse.profiles
+FOR EACH ROW EXECUTE FUNCTION pulse.update_timestamp();
+
+CREATE TRIGGER update_user_settings_timestamp
+BEFORE UPDATE ON pulse.user_settings
+FOR EACH ROW EXECUTE FUNCTION pulse.update_timestamp();
