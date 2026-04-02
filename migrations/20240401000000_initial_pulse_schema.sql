@@ -1,10 +1,15 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Create auth schema
-CREATE SCHEMA IF NOT EXISTS auth;
+-- Create auth schema if not exists
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_namespace WHERE nspname = 'auth') THEN
+    CREATE SCHEMA auth;
+  END IF;
+END $$;
 
--- Create auth.uid() function
+-- Create auth.uid() function if not exists
 CREATE OR REPLACE FUNCTION auth.uid() 
 RETURNS uuid
 LANGUAGE sql STABLE
@@ -14,14 +19,6 @@ $$;
 
 -- Create pulse schema
 CREATE SCHEMA IF NOT EXISTS pulse;
-
--- Create auth.uid() function
-CREATE OR REPLACE FUNCTION auth.uid() 
-RETURNS uuid
-LANGUAGE sql STABLE
-AS $$
-  SELECT NULLIF(current_setting('request.jwt.claims', true)::json->>'sub', '')::uuid;
-$$;
 
 -- Create enum types
 CREATE TYPE pulse.metric_level AS ENUM ('low', 'medium', 'high');
@@ -145,8 +142,8 @@ ALTER TABLE pulse.profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage their own profiles" 
 ON pulse.profiles
 FOR ALL
-USING (user_id = auth.uid())
-WITH CHECK (user_id = auth.uid());
+USING (auth.uid() = user_id)
+WITH CHECK (auth.uid() = user_id);
 
 -- Enable RLS and create policies for daily states  
 ALTER TABLE pulse.daily_states ENABLE ROW LEVEL SECURITY;
