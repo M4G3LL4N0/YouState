@@ -1,4 +1,4 @@
-import { DashboardLayout } from '@/components/dashboard-layout';
+import { AppShell } from '@/components/app-shell';
 import { DailyState } from '@/lib/types';
 
 // Mock data - will be replaced with real data fetching
@@ -18,7 +18,7 @@ const currentState: DailyState = {
 
 export default function DashboardPage() {
   return (
-    <DashboardLayout>
+    <AppShell>
       <div className="space-y-8">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Your State</h1>
@@ -62,8 +62,56 @@ export default function DashboardPage() {
             />
           </div>
         </section>
+        {/* Daily Timeline */}
+        <section className="glass rounded-xl p-6 border border-zinc-800 mt-8">
+          <h2 className="text-xl font-semibold mb-4">Daily Timeline</h2>
+          <div className="space-y-3">
+            <TimelineEvent 
+              time="08:30"
+              type="wake"
+              description="Woke up feeling refreshed"
+            />
+            <TimelineEvent 
+              time="09:00"
+              type="eat"
+              description="Had breakfast - oatmeal with berries"
+            />
+            <TimelineEvent 
+              time="10:30"
+              type="focus"
+              description="Deep work session started"
+            />
+          </div>
+        </section>
+
+        {/* Quick Actions */}
+        <section className="glass rounded-xl p-6 border border-zinc-800 mt-8">
+          <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <QuickAction 
+              icon="water"
+              label="Hydrate"
+              onClick={() => console.log('Hydrate')}
+            />
+            <QuickAction 
+              icon="snack"
+              label="Log Meal"
+              onClick={() => console.log('Log Meal')}
+            />
+            <QuickAction 
+              icon="focus"
+              label="Start Focus"
+              onClick={() => console.log('Start Focus')}
+            />
+            <QuickAction 
+              icon="rest"
+              label="Take Break"
+              onClick={() => console.log('Take Break')}
+            />
+          </div>
+        </section>
       </div>
-    </DashboardLayout>
+    </AppShell>
   );
 }
 
