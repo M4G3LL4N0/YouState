@@ -1,6 +1,25 @@
-import { Loader2, Check } from 'lucide-react';
+import { 
+  Loader2, 
+  Check, 
+  AlertTriangle,
+  Droplet,
+  Coffee,
+  Target,
+  Moon,
+  Activity,
+  Utensils,
+  Sparkle 
+} from 'lucide-react';
 
 export const Icons = {
   spinner: Loader2,
   check: Check,
+  alert: AlertTriangle,
+  droplet: Droplet,
+  coffee: Coffee,
+  target: Target,
+  moon: Moon,
+  activity: Activity,
+  utensils: Utensils,
+  sparkle: Sparkle
 };

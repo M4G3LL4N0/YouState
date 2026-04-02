@@ -36,7 +36,7 @@ export function QuickCheckIn() {
     setIsSubmitting(true);
     const supabase = createSupabaseBrowserClient();
     
-    const { error } = await supabase
+    const { error: stateError } = await supabase
       .from('pulse.daily_states')
       .insert({
         energy: getLevel(state.energy),
@@ -45,13 +45,27 @@ export function QuickCheckIn() {
         hydration: getLevel(state.hydration),
         stress_load: getLevel(state.stress),
         caffeine_load: getLevel(state.caffeine),
-        sleep_debt: getLevel(5 - state.sleep), // Invert sleep quality to debt
+        sleep_debt: getLevel(5 - state.sleep),
         physical_demand: state.activity === 'exercise' ? 'high' : 'medium',
         cognitive_demand: state.activity === 'work' ? 'high' : 'medium',
-        crash_risk: 'low' // Will be calculated by recommendation engine
+        crash_risk: 'low'
       });
 
-    if (!error) {
+    if (!stateError) {
+      // Add log entry for the check-in
+      await supabase
+        .from('pulse.daily_logs')
+        .insert({
+          entry_type: 'action',
+          description: 'Completed daily check-in',
+          details: {
+            energy: state.energy,
+            focus: state.focus,
+            hydration: state.hydration,
+            stress: state.stress
+          }
+        });
+
       setSuccess(true);
       setTimeout(() => {
         setSuccess(false);

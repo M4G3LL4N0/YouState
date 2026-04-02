@@ -1,12 +1,18 @@
 import { AppShell } from '@/components/app-shell';
 import { generateRecommendations } from '@/lib/recommendation-engine';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { DashboardHeader } from '@/components/dashboard/header';
+import { StateOverview } from '@/components/dashboard/state-overview';
+import { PrimaryRecommendation } from '@/components/dashboard/primary-recommendation';
+import { RecommendationCard } from '@/components/dashboard/recommendation-card';
+import { QuickCheckIn } from '@/components/dashboard/quick-checkin';
+import { RecentCheckIns } from '@/components/dashboard/recent-checkins';
 
 async function getLatestData() {
   const supabase = createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   
-  if (!user) return { profile: null, state: null };
+  if (!user) return { profile: null, state: null, logs: null };
 
   const { data: profile } = await supabase
     .from('pulse.profiles')
@@ -22,10 +28,17 @@ async function getLatestData() {
     .limit(1)
     .single();
 
-  return { profile, state };
+  const { data: logs } = await supabase
+    .from('pulse.daily_logs')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('logged_at', { ascending: false })
+    .limit(5);
+
+  return { profile, state, logs };
 }
 
-const { profile, state } = await getLatestData();
+const { profile, state, logs } = await getLatestData();
 const recommendations = profile && state 
   ? generateRecommendations(state, profile) 
   : [];
