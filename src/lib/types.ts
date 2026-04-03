@@ -91,15 +91,7 @@ export type UserProfile = {
 export type DailyLogEntry = {
   id?: string;
   timestamp: string | Date;
-  type:
-    | 'check-in'
-    | 'meal'
-    | 'hydration'
-    | 'caffeine'
-    | 'focus'
-    | 'recovery'
-    | 'event';
-  title?: string;
+  type: 'event' | 'action' | 'state';
   description?: string;
   details?: Record<string, unknown>;
 };
