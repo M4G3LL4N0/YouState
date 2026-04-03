@@ -1,76 +1,48 @@
-import { AppShell } from '@/components/app-shell';
-import { generateRecommendations } from '@/lib/recommendation-engine';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { AppShell } from '@/components/layout/app-shell';
 import { DashboardHeader } from '@/components/dashboard/header';
 import { StateOverview } from '@/components/dashboard/state-overview';
-import { PrimaryRecommendation } from '@/components/dashboard/primary-recommendation';
 import { RecommendationCard } from '@/components/dashboard/recommendation-card';
-import { QuickCheckIn } from '@/components/dashboard/quick-checkin';
 import { RecentCheckIns } from '@/components/dashboard/recent-checkins';
+import { mockDailyStates, mockProfiles } from '@/lib/mock-data';
+import { generateRecommendations } from '@/lib/recommendation-engine';
 
-async function getLatestData() {
-  const supabase = createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) return { profile: null, state: null, logs: null };
-
-  const { data: profile } = await supabase
-    .from('pulse.profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-
-  const { data: state } = await supabase
-    .from('pulse.daily_states')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('recorded_at', { ascending: false })
-    .limit(1)
-    .single();
-
-  const { data: logs } = await supabase
-    .from('pulse.daily_logs')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('logged_at', { ascending: false })
-    .limit(5);
-
-  return { profile, state, logs };
-}
-
-const { profile, state, logs } = await getLatestData();
-const recommendations = profile && state 
-  ? generateRecommendations(state, profile) 
-  : [];
-
-export default function DashboardPage() {
-  const primaryRecommendation = recommendations[0];
-  const secondaryRecommendations = recommendations.slice(1, 3);
+export default async function AppPage() {
+  const profile = mockProfiles[0];
+  const currentState = mockDailyStates[0];
+  const recommendations = generateRecommendations(currentState, profile);
 
   return (
     <AppShell>
-      {/* Header with status */}
       <DashboardHeader state={currentState} profile={profile} />
 
-      {/* Current state overview */}
-      <StateOverview state={currentState} />
+      <div className="mt-6 grid gap-6">
+        <StateOverview state={currentState} />
 
-      {/* Main recommendation area */}
-      {primaryRecommendation ? (
-        <>
-          <PrimaryRecommendation recommendation={primaryRecommendation} />
+        <section className="grid gap-6 lg:grid-cols-2">
           <div className="space-y-4">
-            {secondaryRecommendations.map((rec) => (
-              <RecommendationCard key={rec.id} recommendation={rec} />
+            {recommendations.map((recommendation, index) => (
+              <RecommendationCard
+                key={`${recommendation.category}-${recommendation.title}-${index}`}
+                recommendation={recommendation}
+              />
             ))}
           </div>
-        </>
-      ) : null}
 
-      {/* Daily Timeline */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold">Daily Timeline</h2>
-        <RecentCheckIns logs={logs} />
+          <div className="glass rounded-2xl border border-white/10 p-6">
+            <h2 className="text-xl font-semibold">Why</h2>
+            <p className="mt-3 text-sm leading-7 text-white/70">
+              Your current state is stable enough to work, but hydration and meal
+              timing will determine whether your energy holds or drops later.
+            </p>
+          </div>
+        </section>
+
+        <section className="glass rounded-2xl border border-white/10 p-6">
+          <h2 className="text-xl font-semibold">Recent check-ins</h2>
+          <div className="mt-4">
+            <RecentCheckIns />
+          </div>
+        </section>
       </div>
     </AppShell>
   );
