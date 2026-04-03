@@ -8,7 +8,7 @@ interface RecommendationCardProps {
 
 export function RecommendationCard({
   recommendation,
-  compact,
+  compact = false,
 }: RecommendationCardProps) {
   const confidencePercent = Math.round((recommendation.confidence ?? 0) * 100);
 

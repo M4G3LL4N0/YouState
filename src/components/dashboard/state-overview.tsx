@@ -27,7 +27,7 @@ function MetricCard({ label, value, description, icon }: MetricCardProps) {
           <p className="text-sm text-white/50">{label}</p>
           <p className="mt-2 text-2xl font-semibold capitalize text-white">{value}</p>
         </div>
-        {icon ? <div className="text-white/50">{icon}</div> : null}
+        {icon && <div className="text-white/50">{icon}</div>}
       </div>
 
       <div className="mt-4">
