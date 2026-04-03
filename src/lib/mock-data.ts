@@ -7,7 +7,7 @@ export const mockProfiles: Record<string, UserProfile> = {
     age: 32,
     weight: 75,
     height: 180,
-    lifestyle: 'office',
+    lifestyle: 'knowledge-worker',
     goals: ['focus', 'energy'],
     caffeine: {
       habits: 'moderate',
@@ -31,10 +31,10 @@ export const mockProfiles: Record<string, UserProfile> = {
     age: 28,
     weight: 68,
     height: 175,
-    lifestyle: 'shift',
-    goals: ['energy', 'recovery'],
+    lifestyle: 'shift-worker',
+    goals: ['energy', 'better-recovery'],
     caffeine: {
-      habits: 'heavy',
+      habits: 'high',
       sensitivity: 'low',
       lastDose: new Date(Date.now() - 1 * 60 * 60 * 1000)
     },
@@ -56,9 +56,9 @@ export const mockProfiles: Record<string, UserProfile> = {
     weight: 62,
     height: 170,
     lifestyle: 'student',
-    goals: ['balance', 'focus'],
+    goals: ['better-recovery', 'focus'],
     caffeine: {
-      habits: 'light',
+      habits: 'low',
       sensitivity: 'high',
       lastDose: new Date(Date.now() - 4 * 60 * 60 * 1000)
     },

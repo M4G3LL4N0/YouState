@@ -1,113 +1,105 @@
-export type MetricLevel = 'low' | 'medium' | 'high';
-export type HungerLevel = 'low' | 'rising' | 'high';
-export type HydrationLevel = 'low' | 'ok' | 'good';
+export type LifestyleType =
+  | 'knowledge-worker'
+  | 'shift-worker'
+  | 'physical-labor'
+  | 'student'
+  | 'busy-parent'
+  | 'general';
 
-export interface DailyState {
-  energy: MetricLevel;
-  focus: MetricLevel;
-  hunger: HungerLevel;
-  crashRisk: MetricLevel;
-  hydration: HydrationLevel;
-  sleepDebt: MetricLevel;
-  caffeineLoad: MetricLevel;
-  physicalDemand: MetricLevel;
-  cognitiveDemand: MetricLevel;
-  stressLoad: MetricLevel;
-  lastUpdated: Date;
-}
+export type GoalType =
+  | 'more-energy'
+  | 'better-focus'
+  | 'weight-control'
+  | 'better-recovery'
+  | 'performance'
+  | 'focus'
+  | 'energy';
 
-export interface ApiResponse<T> {
-  data?: T;
-  error?: {
-    message: string;
-    code: string;
-  };
-  success: boolean;
-}
+export type Level = 'low' | 'medium' | 'high';
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  page: number;
-  pageSize: number;
-  total: number;
-  hasMore: boolean;
-}
+export type DailyState = {
+  energy: Level;
+  focus: Level;
+  hunger: 'low' | 'rising' | 'high';
+  crashRisk: Level;
+  hydration: 'low' | 'ok' | 'good';
+  sleepDebt: Level;
+  caffeineLoad: 'low' | 'moderate' | 'high';
+  physicalDemand?: Level;
+  cognitiveDemand?: Level;
+  stressLoad?: Level;
+  lastUpdated?: Date;
+};
 
-export interface UserPreferences {
-  notifications: {
-    email: boolean;
-    push: boolean;
-    sms: boolean;
-  };
-  privacy: {
-    dataSharing: boolean;
-    analytics: boolean;
-  };
-  integrations: {
-    appleHealth: boolean;
-    googleFit: boolean;
-    wearables: boolean;
-  };
-  updatedAt: Date;
-}
-
-export type RecommendationType = 
-  | 'eat' 
-  | 'hydrate' 
-  | 'caffeine' 
-  | 'focus' 
-  | 'recovery' 
+export type RecommendationCategory =
+  | 'eat'
+  | 'hydrate'
+  | 'caffeine'
+  | 'focus'
+  | 'recovery'
   | 'movement';
 
 export type Recommendation = {
+  category: RecommendationCategory;
   title: string;
   action: string;
-  category: RecommendationType;
-  priority: number;
-  confidence: number;
-  reasoning: string;
-  caution?: string;
-  idealTime?: string;
-  duration?: number;
-  supportingActions?: string[];
+  priority?: Level;
+  confidence?: number;
 };
 
-export type PrimaryGoal = 'energy' | 'focus' | 'recovery' | 'performance' | 'balance';
-export type LifestyleType = 'office' | 'remote' | 'shift' | 'freelance' | 'other';
-export type SleepSchedule = 'early' | 'late' | 'irregular' | 'shift';
-export type CaffeineHabits = 'none' | 'light' | 'moderate' | 'heavy';
-export type MealRegularity = 'strict' | 'flexible' | 'irregular';
-export type StressLevel = 'low' | 'medium' | 'high';
-
 export type UserProfile = {
-  primaryGoal: PrimaryGoal;
-  lifestyleType: LifestyleType;
-  sleepSchedule: SleepSchedule;
-  caffeineHabits: CaffeineHabits;
-  mealRegularity: MealRegularity;
-  physicalActivity: MetricLevel;
-  stressLevel: StressLevel;
+  id: string;
+  name?: string;
+  fullName?: string;
+  email?: string;
   age?: number;
   weight?: number;
   height?: number;
-  sleepNeed?: number;
-  caffeineSensitivity?: 'low' | 'medium' | 'high';
-  goals?: string[];
+  lifestyle: LifestyleType;
+  primaryGoal?: GoalType;
+  goals?: GoalType[];
+
+  caffeine?: {
+    habits?: 'none' | 'low' | 'moderate' | 'high';
+    timing?: string;
+    sensitivity?: Level;
+    lastDose?: Date;
+  };
+
+  sleep?: {
+    schedule?: string;
+    averageHours?: number;
+    quality?: Level;
+    need?: number;
+    debt?: number;
+  };
+
+  work?: {
+    type?: string;
+    hours?: string;
+    environment?: string;
+  };
+
+  activityLevel?: Level;
+  stressLevel?: Level;
+  mealPattern?: string;
+
+  createdAt?: Date;
+  updatedAt?: Date;
 };
 
-export type Settings = {
-  notifications: {
-    email: boolean;
-    push: boolean;
-    sms: boolean;
-  };
-  privacy: {
-    dataSharing: boolean;
-    analytics: boolean;
-  };
-  integrations: {
-    appleHealth: boolean;
-    googleFit: boolean;
-    wearables: boolean;
-  };
+export type DailyLogEntry = {
+  id?: string;
+  timestamp: string | Date;
+  type:
+    | 'check-in'
+    | 'meal'
+    | 'hydration'
+    | 'caffeine'
+    | 'focus'
+    | 'recovery'
+    | 'event';
+  title?: string;
+  description?: string;
+  details?: Record<string, unknown>;
 };
