@@ -4,20 +4,31 @@ export const mockProfiles: Record<string, UserProfile> = {
   knowledgeWorker: {
     id: 'kw1',
     name: 'Alex',
+    fullName: 'Alex Johnson',
+    email: 'alex@example.com',
     age: 32,
     weight: 75,
     height: 180,
     lifestyle: 'knowledge-worker',
+    primaryGoal: 'better-focus',
     goals: ['focus', 'energy'],
     caffeine: {
       habits: 'moderate',
+      timing: 'morning',
       sensitivity: 'medium',
       lastDose: new Date(Date.now() - 3 * 60 * 60 * 1000)
     },
     sleep: {
-      schedule: 'early',
+      schedule: 'regular',
+      averageHours: 6.5,
+      quality: 'medium',
       need: 7.5,
       debt: 1.2
+    },
+    work: {
+      type: 'desk-job',
+      hours: '9-5',
+      environment: 'office'
     },
     activityLevel: 'medium',
     stressLevel: 'medium',

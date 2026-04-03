@@ -10,22 +10,30 @@ interface MetricCardProps {
   label: string;
   value: string;
   description: string;
+  icon: React.ReactNode;
 }
 
-function MetricCard({ label, value, description }: MetricCardProps) {
+function MetricCard({ label, value, description, icon }: MetricCardProps) {
   const progressValue =
     value === 'high' ? 100 : value === 'medium' || value === 'rising' || value === 'ok' ? 60 : 25;
 
   return (
     <Card className="p-5">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-white/50">{label}</p>
-        <span className="text-sm font-medium capitalize text-white/90">{value}</span>
+      <div className="flex items-center gap-3">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5">
+          {icon}
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-white/50">{label}</p>
+            <span className="text-sm font-medium capitalize text-white/90">{value}</span>
+          </div>
+          <div className="mt-3">
+            <Progress value={progressValue} />
+          </div>
+          <p className="mt-2 text-xs text-white/45">{description}</p>
+        </div>
       </div>
-      <div className="mt-4">
-        <Progress value={progressValue} />
-      </div>
-      <p className="mt-3 text-xs text-white/45">{description}</p>
     </Card>
   );
 }
