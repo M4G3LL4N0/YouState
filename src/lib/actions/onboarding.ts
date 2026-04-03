@@ -16,7 +16,7 @@ export interface OnboardingFormData {
   name: string;
 }
 
-export async function saveOnboarding(formData: OnboardingFormData) {
+export async function submitOnboarding(formData: OnboardingFormData) {
   const supabase = await createClient();
 
   const {
@@ -28,8 +28,6 @@ export async function saveOnboarding(formData: OnboardingFormData) {
     throw new Error('Not authenticated');
   }
 
-  // The Supabase client returned by createClient is typed as `SupabaseClient<Database>`.
-  // For the purpose of this action we only need the `schema` method, so we cast to `any`.
   const db = supabase as any;
 
   const { error } = await db
@@ -55,5 +53,3 @@ export async function saveOnboarding(formData: OnboardingFormData) {
   revalidatePath('/app');
   redirect('/app');
 }
-
-export const completeOnboarding = saveOnboarding;

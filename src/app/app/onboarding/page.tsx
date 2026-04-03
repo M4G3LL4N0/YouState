@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { AppShell } from '@/components/app-shell';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
-import { completeOnboarding } from '@/lib/actions/onboarding';
+import { submitOnboarding } from '@/lib/actions/onboarding'; // Updated import
 
 const steps = [
   {
@@ -58,7 +58,7 @@ export default function OnboardingPage() {
     setIsSubmitting(true);
     setError(null);
     try {
-      await completeOnboarding(formData);
+      await submitOnboarding(formData); // Updated function call
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred');
     } finally {
