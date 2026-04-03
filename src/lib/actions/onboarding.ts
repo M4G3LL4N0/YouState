@@ -1,10 +1,10 @@
 'use server';
 
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
-export async function saveOnboarding(formData: {
+export interface OnboardingFormData {
   lifestyleType: string;
   primaryGoal: string;
   sleepSchedule: string;
@@ -14,8 +14,10 @@ export async function saveOnboarding(formData: {
   activityLevel: string;
   stressLevel: string;
   name: string;
-}) {
-  const supabase = await createSupabaseServerClient();
+}
+
+export async function saveOnboarding(formData: OnboardingFormData) {
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -26,6 +28,8 @@ export async function saveOnboarding(formData: {
     throw new Error('Not authenticated');
   }
 
+  // The Supabase client returned by createClient is typed as `SupabaseClient<Database>`.
+  // For the purpose of this action we only need the `schema` method, so we cast to `any`.
   const db = supabase as any;
 
   const { error } = await db
