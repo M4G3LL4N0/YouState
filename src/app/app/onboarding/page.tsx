@@ -142,22 +142,24 @@ export default function OnboardingPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-3xl border border-white/10 bg-white/5 p-6 md:p-8">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-white/40">Onboarding</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight">Build your adaptive profile</h1>
+      <div className="glass rounded-3xl border border-white/10 p-8">
+        <div className="mb-8 flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.2em] text-white/40">Personalization</p>
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight">Build Your Adaptive Profile</h1>
+            </div>
+            <div className="text-sm text-white/45">
+              Step {currentStep + 1} / {steps.length}
+            </div>
           </div>
-          <div className="text-sm text-white/45">
-            Step {currentStep + 1} / {steps.length}
-          </div>
-        </div>
 
-        <div className="mb-8 h-2 overflow-hidden rounded-full bg-white/10">
-          <div
-            className="h-full rounded-full bg-white transition-all"
-            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-          />
+          <div className="h-2 overflow-hidden rounded-full bg-white/10">
+            <div
+              className="h-full rounded-full bg-white transition-all"
+              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            />
+          </div>
         </div>
 
         <div>

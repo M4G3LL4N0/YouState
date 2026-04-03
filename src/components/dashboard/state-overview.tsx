@@ -16,22 +16,30 @@ interface MetricCardProps {
 function MetricCard({ label, value, description, icon }: MetricCardProps) {
   const progressValue =
     value === 'high' ? 100 : value === 'medium' || value === 'rising' || value === 'ok' ? 60 : 25;
+  const toneClass = 
+    value === 'high' ? 'text-emerald-300' :
+    value === 'medium' || value === 'rising' || value === 'ok' ? 'text-amber-300' :
+    'text-rose-300';
 
   return (
-    <Card className="p-5">
-      <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5">
+    <Card className="p-6">
+      <div className="flex items-center gap-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5">
           {icon}
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-white/50">{label}</p>
-            <span className="text-sm font-medium capitalize text-white/90">{value}</span>
+            <p className="text-sm font-medium text-white/70">{label}</p>
+            <span className={`text-sm font-semibold capitalize ${toneClass}`}>
+              {value}
+            </span>
           </div>
-          <div className="mt-3">
+          <div className="mt-4">
             <Progress value={progressValue} />
           </div>
-          <p className="mt-2 text-xs text-white/45">{description}</p>
+          <p className="mt-3 text-xs text-white/50">
+            {description}
+          </p>
         </div>
       </div>
     </Card>

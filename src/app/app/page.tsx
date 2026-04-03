@@ -18,36 +18,44 @@ export default async function AppPage() {
     <AppShell>
       <DashboardHeader state={currentState} profile={profile} />
 
-      <div className="mt-6 grid gap-6">
+      <div className="mt-8 grid gap-8">
         <StateOverview state={currentState} />
 
-        <PrimaryRecommendation recommendation={primaryRecommendation} />
-
-        <section className="grid gap-6 lg:grid-cols-2">
-          <div className="space-y-4">
-            {secondaryRecommendations.map((recommendation, index) => (
-              <RecommendationCard
-                key={`${recommendation.category}-${recommendation.title}-${index}`}
-                recommendation={recommendation}
-              />
-            ))}
+        <section className="grid gap-8 lg:grid-cols-[2fr_1fr]">
+          <div className="space-y-8">
+            <PrimaryRecommendation recommendation={primaryRecommendation} />
+            
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold tracking-tight">Your Action Plan</h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                {secondaryRecommendations.map((recommendation, index) => (
+                  <RecommendationCard
+                    key={`${recommendation.category}-${recommendation.title}-${index}`}
+                    recommendation={recommendation}
+                    compact
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="glass rounded-2xl border border-white/10 p-6">
-            <h2 className="text-xl font-semibold">Why This Matters</h2>
-            <p className="mt-3 text-sm leading-7 text-white/70">
-              Your current state is stable enough to work, but hydration and meal
-              timing will determine whether your energy holds or drops later.
-              We'll help you maintain optimal performance throughout the day.
-            </p>
-          </div>
-        </section>
+          <aside className="space-y-8">
+            <div className="glass rounded-3xl border border-white/10 p-6">
+              <h2 className="text-xl font-semibold tracking-tight">Why This Matters</h2>
+              <p className="mt-3 text-sm leading-7 text-white/70">
+                Your current state is stable enough to work, but hydration and meal
+                timing will determine whether your energy holds or drops later.
+                We'll help you maintain optimal performance throughout the day.
+              </p>
+            </div>
 
-        <section className="glass rounded-2xl border border-white/10 p-6">
-          <h2 className="text-xl font-semibold">Recent Check-Ins</h2>
-          <div className="mt-4">
-            <RecentCheckIns />
-          </div>
+            <div className="glass rounded-3xl border border-white/10 p-6">
+              <h2 className="text-xl font-semibold tracking-tight">Recent Check-Ins</h2>
+              <div className="mt-4">
+                <RecentCheckIns />
+              </div>
+            </div>
+          </aside>
         </section>
       </div>
     </AppShell>

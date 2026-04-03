@@ -1,13 +1,18 @@
 import type { DailyState, Recommendation, UserProfile, Level } from '@/lib/types';
 
 function levelToPriority(level: number): Level {
-  if (level >= 0.75) return 'high';
-  if (level >= 0.4) return 'medium';
+  if (level >= 0.8) return 'high';
+  if (level >= 0.5) return 'medium';
   return 'low';
 }
 
 function sortByConfidence(a: Recommendation, b: Recommendation): number {
-  return (b.confidence ?? 0) - (a.confidence ?? 0);
+  // Sort by confidence, then by priority
+  const confidenceDiff = (b.confidence ?? 0) - (a.confidence ?? 0);
+  if (confidenceDiff !== 0) return confidenceDiff;
+  
+  const priorityOrder = { high: 3, medium: 2, low: 1 };
+  return priorityOrder[b.priority ?? 'low'] - priorityOrder[a.priority ?? 'low'];
 }
 
 export function generateRecommendations(
@@ -15,6 +20,8 @@ export function generateRecommendations(
   profile?: UserProfile
 ): Recommendation[] {
   const recommendations: Recommendation[] = [];
+  const now = new Date();
+  const hour = now.getHours();
 
   // Hydration recommendations
   if (state.hydration === 'low' || state.hydration === 'ok') {
