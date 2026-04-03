@@ -1,30 +1,45 @@
 import { DailyState, UserProfile } from '@/lib/types';
 import { StateIndicator } from './state-indicator';
 
-export function DashboardHeader({
-  state,
-  profile
-}: {
+interface DashboardHeaderProps {
   state: DailyState;
-  profile?: UserProfile | null;
-}) {
+  profile?: UserProfile;
+}
+
+export function DashboardHeader({ state, profile }: DashboardHeaderProps) {
+  const displayName =
+    (profile as UserProfile & {
+      name?: string;
+      fullName?: string;
+      full_name?: string;
+      email?: string;
+    })?.name ||
+    (profile as UserProfile & {
+      fullName?: string;
+      full_name?: string;
+      email?: string;
+    })?.fullName ||
+    (profile as UserProfile & {
+      full_name?: string;
+      email?: string;
+    })?.full_name ||
+    (profile as UserProfile & {
+      email?: string;
+    })?.email ||
+    'Welcome';
+
   return (
-    <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-6 md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">
-          {profile?.name || 'Welcome'}
-        </h1>
-        <div className="flex items-center gap-2 mt-1">
+        <h1 className="text-2xl font-bold tracking-tight">{displayName}</h1>
+        <div className="mt-1 flex items-center gap-2">
           <p className="text-sm text-zinc-400">
-            Current Status
+            Your real-time state and recommendations
           </p>
-          <StateIndicator state={state} />
         </div>
       </div>
 
-      <div className="text-zinc-400 text-sm">
-        Last updated: {state.lastUpdated.toLocaleTimeString()}
-      </div>
-    </header>
+      <StateIndicator state={state} />
+    </div>
   );
 }

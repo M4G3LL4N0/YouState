@@ -1,4 +1,4 @@
-import { DailyState } from '@/lib/types';
+import { DailyState, Level } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
@@ -10,38 +10,31 @@ interface MetricCardProps {
   label: string;
   value: string;
   description: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
+}
+
+function getProgressValue(value: string) {
+  if (value === 'high') return 100;
+  if (value === 'medium' || value === 'rising' || value === 'ok' || value === 'moderate') return 60;
+  return 25;
 }
 
 function MetricCard({ label, value, description, icon }: MetricCardProps) {
-  const progressValue =
-    value === 'high' ? 100 : value === 'medium' || value === 'rising' || value === 'ok' ? 60 : 25;
-  const toneClass = 
-    value === 'high' ? 'text-emerald-300' :
-    value === 'medium' || value === 'rising' || value === 'ok' ? 'text-amber-300' :
-    'text-rose-300';
-
   return (
-    <Card className="p-6">
-      <div className="flex items-center gap-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5">
-          {icon}
+    <Card className="p-5">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-sm text-white/50">{label}</p>
+          <p className="mt-2 text-2xl font-semibold capitalize text-white">{value}</p>
         </div>
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-white/70">{label}</p>
-            <span className={`text-sm font-semibold capitalize ${toneClass}`}>
-              {value}
-            </span>
-          </div>
-          <div className="mt-4">
-            <Progress value={progressValue} />
-          </div>
-          <p className="mt-3 text-xs text-white/50">
-            {description}
-          </p>
-        </div>
+        {icon ? <div className="text-white/50">{icon}</div> : null}
       </div>
+
+      <div className="mt-4">
+        <Progress value={getProgressValue(value)} />
+      </div>
+
+      <p className="mt-3 text-xs text-white/45">{description}</p>
     </Card>
   );
 }
@@ -49,10 +42,26 @@ function MetricCard({ label, value, description, icon }: MetricCardProps) {
 export function StateOverview({ state }: StateOverviewProps) {
   return (
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      <MetricCard label="Energy" value={state.energy} description="Your current energy level" />
-      <MetricCard label="Focus" value={state.focus} description="Your current cognitive sharpness" />
-      <MetricCard label="Hunger" value={state.hunger} description="Your current hunger state" />
-      <MetricCard label="Hydration" value={state.hydration} description="Your hydration status" />
+      <MetricCard
+        label="Energy"
+        value={state.energy}
+        description="Your current energy level"
+      />
+      <MetricCard
+        label="Focus"
+        value={state.focus}
+        description="Your current cognitive sharpness"
+      />
+      <MetricCard
+        label="Hunger"
+        value={state.hunger}
+        description="Your current hunger state"
+      />
+      <MetricCard
+        label="Hydration"
+        value={state.hydration}
+        description="Your hydration status"
+      />
       <MetricCard
         label="Sleep Debt"
         value={state.sleepDebt}

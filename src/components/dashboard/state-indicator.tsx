@@ -1,50 +1,41 @@
-type MetricLevel = 'low' | 'medium' | 'high';
-type HungerLevel = 'low' | 'rising' | 'high';
+import { DailyState } from '@/lib/types';
 
 interface StateIndicatorProps {
-  energy: MetricLevel;
-  focus: MetricLevel;
-  hunger: HungerLevel;
-  className?: string;
+  state: DailyState;
 }
 
-export function StateIndicator({ energy, focus, hunger, className }: StateIndicatorProps) {
-  const getMetricColor = (level: MetricLevel) => {
-    switch (level) {
-      case 'high':
-        return 'bg-green-500';
-      case 'medium':
-        return 'bg-yellow-500';
-      case 'low':
-        return 'bg-red-500';
-    }
-  };
+function toneClass(value: 'low' | 'medium' | 'high') {
+  if (value === 'high') return 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20';
+  if (value === 'medium') return 'bg-amber-500/15 text-amber-300 border-amber-500/20';
+  return 'bg-rose-500/15 text-rose-300 border-rose-500/20';
+}
 
-  const getHungerColor = (level: HungerLevel) => {
-    switch (level) {
-      case 'low':
-        return 'bg-green-500';
-      case 'rising':
-        return 'bg-yellow-500';
-      case 'high':
-        return 'bg-red-500';
-    }
-  };
-
+export function StateIndicator({ state }: StateIndicatorProps) {
   return (
-    <div className={`flex items-center gap-4 ${className || ''}`}>
-      <div className="flex items-center gap-2">
-        <div className={`w-2 h-2 rounded-full ${getMetricColor(energy)}`} />
-        <span className="text-xs">Energy</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <div className={`w-2 h-2 rounded-full ${getMetricColor(focus)}`} />
-        <span className="text-xs">Focus</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <div className={`w-2 h-2 rounded-full ${getHungerColor(hunger)}`} />
-        <span className="text-xs">Hunger</span>
-      </div>
+    <div className="flex flex-wrap items-center gap-2">
+      <span
+        className={`rounded-full border px-3 py-1 text-xs font-medium capitalize ${toneClass(
+          state.energy
+        )}`}
+      >
+        Energy: {state.energy}
+      </span>
+
+      <span
+        className={`rounded-full border px-3 py-1 text-xs font-medium capitalize ${toneClass(
+          state.focus
+        )}`}
+      >
+        Focus: {state.focus}
+      </span>
+
+      <span
+        className={`rounded-full border px-3 py-1 text-xs font-medium capitalize ${toneClass(
+          state.crashRisk
+        )}`}
+      >
+        Crash risk: {state.crashRisk}
+      </span>
     </div>
   );
 }
