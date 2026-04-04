@@ -4,9 +4,7 @@ interface PrimaryRecommendationProps {
   recommendation: Recommendation;
 }
 
-export function PrimaryRecommendation({
-  recommendation,
-}: PrimaryRecommendationProps) {
+export function PrimaryRecommendation({ recommendation }: PrimaryRecommendationProps) {
   return (
     <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
       <div className="flex items-start gap-4">

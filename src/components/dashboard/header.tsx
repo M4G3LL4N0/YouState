@@ -1,5 +1,4 @@
 import { DailyState, UserProfile } from '@/lib/types';
-import { StateIndicator } from './state-indicator';
 
 interface DashboardHeaderProps {
   state: DailyState;

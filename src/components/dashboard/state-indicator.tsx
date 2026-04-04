@@ -1,4 +1,4 @@
-import { DailyState } from '@/lib/types';
+import { DailyState, Level } from '@/lib/types';
 
 interface StateIndicatorProps {
   state: DailyState;
