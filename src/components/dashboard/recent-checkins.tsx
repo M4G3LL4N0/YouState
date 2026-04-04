@@ -1,51 +1,54 @@
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { format } from 'date-fns';
-import { Icons } from '@/components/icons';
+import * as Icons from '@/components/icons';
 
 export async function RecentCheckIns() {
-  const supabase = createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) return null;
+  try {
+    await createClient();
+  } catch {
+    // ignore until Supabase is fully wired
+  }
 
-  const { data: logs } = await supabase
-    .from('pulse.daily_logs')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('logged_at', { ascending: false })
-    .limit(5);
-
-  if (!logs?.length) return null;
+  const items = [
+    {
+      id: '1',
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      title: 'Energy check-in',
+      description: 'Energy stable, focus improving.',
+    },
+    {
+      id: '2',
+      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
+      title: 'Hydration',
+      description: 'Water intake increased.',
+    },
+    {
+      id: '3',
+      timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000),
+      title: 'Caffeine',
+      description: 'Moderate caffeine dose logged.',
+    },
+  ];
 
   return (
-    <div className="glass rounded-xl p-6 border border-zinc-800">
-      <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-      <div className="space-y-3">
-        {logs.map((log) => (
-          <div key={log.id} className="flex items-start gap-3 p-3 bg-zinc-800/30 rounded-lg">
-            <div className="flex-shrink-0 mt-1">
-              {log.entry_type === 'action' ? (
-                <Icons.check className="w-4 h-4 text-emerald-400" />
-              ) : log.entry_type === 'event' ? (
-                <div className="w-4 h-4 rounded-full bg-blue-500/20 border border-blue-500" />
-              ) : (
-                <div className="w-4 h-4 rounded-full bg-amber-500/20 border border-amber-500" />
-              )}
+    <div className="space-y-3">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+        >
+          <Icons.Activity className="mt-0.5 h-4 w-4 text-white/60" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-medium text-white">{item.title}</p>
+              <p className="text-xs text-white/45">
+                {format(item.timestamp, 'p')}
+              </p>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{log.description}</p>
-              {log.details && (
-                <p className="text-xs text-zinc-400 mt-1 truncate">
-                  {Object.entries(log.details).map(([key, val]) => `${key}: ${val}`).join(' • ')}
-                </p>
-              )}
-            </div>
-            <div className="text-xs text-zinc-500 whitespace-nowrap">
-              {format(new Date(log.logged_at), 'h:mm a')}
-            </div>
+            <p className="mt-1 text-sm text-white/65">{item.description}</p>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }

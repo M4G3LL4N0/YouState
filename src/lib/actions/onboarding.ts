@@ -1,10 +1,10 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
-export interface OnboardingFormData {
+export type OnboardingFormData = {
   lifestyleType: string;
   primaryGoal: string;
   sleepSchedule: string;
@@ -14,10 +14,10 @@ export interface OnboardingFormData {
   activityLevel: string;
   stressLevel: string;
   name: string;
-}
+};
 
-export async function submitOnboarding(formData: OnboardingFormData) {
-  const supabase = await createClient();
+export async function completeOnboarding(formData: OnboardingFormData) {
+  const supabase = await createSupabaseServerClient();
 
   const {
     data: { user },
@@ -53,3 +53,5 @@ export async function submitOnboarding(formData: OnboardingFormData) {
   revalidatePath('/app');
   redirect('/app');
 }
+
+export const saveOnboarding = completeOnboarding;
