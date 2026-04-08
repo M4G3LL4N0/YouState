@@ -16,6 +16,7 @@ export default function SettingsPage() {
             <SettingsToggle label="Email notifications" name="email" />
             <SettingsToggle label="Push notifications" name="push" />
             <SettingsToggle label="SMS alerts" name="sms" />
+            <SettingsToggle label="Desktop notifications" name="desktop" />
           </SettingsSection>
 
           <SettingsSection title="Integrations">
