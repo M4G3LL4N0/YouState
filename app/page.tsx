@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { motion, type MotionProps } from 'framer-motion';
+import { motion } from 'framer-motion';
+import type { MotionProps } from 'framer-motion';
 
 export default function HomePage() {
   return (
@@ -22,7 +23,7 @@ export default function HomePage() {
             Real-time personal optimization
           </div>
 
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
