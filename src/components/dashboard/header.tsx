@@ -1,4 +1,5 @@
 import { DailyState, UserProfile } from '@/lib/types';
+import { StateIndicator } from '@/components/dashboard/state-indicator';
 
 interface DashboardHeaderProps {
   state: DailyState;
@@ -7,24 +8,9 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ state, profile }: DashboardHeaderProps) {
   const displayName =
-    (profile as UserProfile & {
-      name?: string;
-      fullName?: string;
-      full_name?: string;
-      email?: string;
-    })?.name ||
-    (profile as UserProfile & {
-      fullName?: string;
-      full_name?: string;
-      email?: string;
-    })?.fullName ||
-    (profile as UserProfile & {
-      full_name?: string;
-      email?: string;
-    })?.full_name ||
-    (profile as UserProfile & {
-      email?: string;
-    })?.email ||
+    profile?.name ||
+    profile?.fullName ||
+    profile?.email ||
     'Welcome';
 
   return (

@@ -15,7 +15,7 @@ export default function SignInPage() {
     });
 
     if (!error) {
-      redirect('/app');
+      redirect('/app/onboarding');
     } else {
       console.error('Sign in error:', error.message);
       // TODO: Handle error in UI
