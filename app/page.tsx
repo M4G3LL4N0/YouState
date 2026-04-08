@@ -2,8 +2,6 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Suspense } from 'react';
-import Loading from '@/components/loading';
 
 export default function HomePage() {
   const containerVariants = {
@@ -48,7 +46,6 @@ export default function HomePage() {
             Real-time personal optimization
           </div>
 
-          <Suspense fallback={<Loading />}>
             <motion.div
               initial="hidden"
               animate="visible"
@@ -68,7 +65,6 @@ export default function HomePage() {
                 </motion.span>
               </motion.h1>
             </motion.div>
-          </Suspense>
 
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">
             YouState adapts energy, nutrition, hydration, focus, and recovery guidance
