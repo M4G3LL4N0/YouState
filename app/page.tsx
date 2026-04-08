@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export default function HomePage() {
   return (
@@ -21,10 +23,15 @@ export default function HomePage() {
             Real-time personal optimization
           </div>
 
-          <h1 className="mt-6 max-w-4xl text-5xl font-semibold tracking-tight sm:text-7xl">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="mt-6 max-w-4xl text-5xl font-semibold tracking-tight sm:text-7xl"
+          >
             Your body already knows what it needs.
             <span className="block text-white/65">We tell you what to do next.</span>
-          </h1>
+          </motion.h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/70">
             YouState adapts energy, nutrition, hydration, focus, and recovery guidance
