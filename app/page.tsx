@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import type { MotionProps } from 'framer-motion';
+import { motion, type MotionProps } from 'framer-motion';
 
 export default function HomePage() {
   return (
@@ -28,7 +27,6 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className="mt-6 max-w-4xl text-5xl font-semibold tracking-tight sm:text-7xl"
-            {...({} as MotionProps)}
           >
             Your body already knows what it needs.
             <span className="block text-white/65">We tell you what to do next.</span>
