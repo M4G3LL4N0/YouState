@@ -1,4 +1,4 @@
-import { UserProfile, DailyState, DailyLogEntry } from './types';
+import type { DailyLogEntry, DailyState, UserProfile } from './types';
 
 export const mockProfiles: Record<string, UserProfile> = {
   knowledgeWorker: {
@@ -11,7 +11,7 @@ export const mockProfiles: Record<string, UserProfile> = {
     height: 180,
     lifestyle: 'knowledge-worker',
     primaryGoal: 'better-focus',
-    goals: ['focus', 'energy'],
+    goals: ['better-focus', 'more-energy'],
     caffeine: {
       habits: 'moderate',
       timing: 'morning',
@@ -43,7 +43,7 @@ export const mockProfiles: Record<string, UserProfile> = {
     weight: 68,
     height: 175,
     lifestyle: 'shift-worker',
-    goals: ['energy', 'better-recovery'],
+    goals: ['more-energy', 'better-recovery'],
     caffeine: {
       habits: 'high',
       sensitivity: 'low',
@@ -67,7 +67,7 @@ export const mockProfiles: Record<string, UserProfile> = {
     weight: 62,
     height: 170,
     lifestyle: 'student',
-    goals: ['better-recovery', 'focus'],
+    goals: ['better-recovery', 'better-focus'],
     caffeine: {
       habits: 'low',
       sensitivity: 'high',
@@ -119,6 +119,7 @@ export const mockTimeline: DailyLogEntry[] = [
   {
     timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
     type: 'event',
+    title: 'Wake state',
     description: 'Woke up feeling refreshed',
     details: {
       sleepDuration: 6.5
@@ -127,6 +128,7 @@ export const mockTimeline: DailyLogEntry[] = [
   {
     timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
     type: 'action',
+    title: 'Breakfast',
     description: 'Had breakfast - oatmeal with berries',
     details: {
       calories: 350,
@@ -140,6 +142,7 @@ export const mockTimeline: DailyLogEntry[] = [
   {
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
     type: 'state',
+    title: 'Focus window',
     description: 'Started deep work session',
     details: {
       focusLevel: 'high'

@@ -1,22 +1,28 @@
 'use server';
 
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient, hasSupabaseEnv } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import type { GoalType, Level, LifestyleType } from '@/lib/types';
 
 export type OnboardingFormData = {
-  lifestyleType: string;
-  primaryGoal: string;
+  lifestyleType: LifestyleType;
+  primaryGoal: GoalType;
   sleepSchedule: string;
-  caffeineHabits: string;
-  caffeineSensitivity: string;
+  caffeineHabits: 'none' | 'low' | 'moderate' | 'high';
+  caffeineSensitivity: Level;
   mealPattern: string;
-  activityLevel: string;
-  stressLevel: string;
+  activityLevel: Level;
+  stressLevel: Level;
   name: string;
 };
 
 export async function completeOnboarding(formData: OnboardingFormData) {
+  if (!hasSupabaseEnv()) {
+    revalidatePath('/app');
+    redirect('/app?onboarding=demo');
+  }
+
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -25,12 +31,11 @@ export async function completeOnboarding(formData: OnboardingFormData) {
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    throw new Error('Not authenticated');
+    revalidatePath('/app');
+    redirect('/app?onboarding=local');
   }
 
-  const db = supabase as any;
-
-  const { error } = await db
+  const { error } = await supabase
     .schema('pulse')
     .from('profiles')
     .upsert({

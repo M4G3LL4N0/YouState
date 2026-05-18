@@ -12,6 +12,7 @@ body {
 
 body {
   margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
   color: white;
   background:
     radial-gradient(circle at top, rgba(255,255,255,0.05), transparent 30%),
@@ -24,4 +25,10 @@ body {
 
 a {
   text-decoration: none;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(18px);
 }

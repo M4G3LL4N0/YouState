@@ -1,8 +1,10 @@
+import type { ReactNode } from 'react';
+
 interface CardProps {
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function Card({ className, children }: CardProps) {
-  return <div className={`glass rounded-xl border border-zinc-800 ${className || ''}`}>{children}</div>;
+  return <div className={`rounded-2xl border border-white/10 bg-white/[0.045] backdrop-blur ${className || ''}`}>{children}</div>;
 }

@@ -1,5 +1,8 @@
+export type Level = 'low' | 'medium' | 'high';
+
 export type LifestyleType =
   | 'knowledge-worker'
+  | 'founder'
   | 'shift-worker'
   | 'physical-labor'
   | 'student'
@@ -9,13 +12,11 @@ export type LifestyleType =
 export type GoalType =
   | 'more-energy'
   | 'better-focus'
-  | 'weight-control'
+  | 'stable-mood'
   | 'better-recovery'
   | 'performance'
-  | 'focus'
-  | 'energy';
-
-export type Level = 'low' | 'medium' | 'high';
+  | 'less-crashing'
+  | 'nutrition-timing';
 
 export type DailyState = {
   energy: Level;
@@ -32,19 +33,25 @@ export type DailyState = {
 };
 
 export type RecommendationCategory =
-  | 'eat'
+  | 'fuel'
   | 'hydrate'
   | 'caffeine'
   | 'focus'
   | 'recovery'
-  | 'movement';
+  | 'movement'
+  | 'stress';
 
 export type Recommendation = {
+  id: string;
   category: RecommendationCategory;
   title: string;
+  message: string;
   action: string;
-  priority?: Level;
-  confidence?: number;
+  why: string;
+  reasoning: string[];
+  priority: Level;
+  confidence: number;
+  timeframe: string;
 };
 
 export type UserProfile = {
@@ -88,10 +95,65 @@ export type UserProfile = {
   updatedAt?: Date;
 };
 
+export type Database = {
+  public: {
+    Tables: {
+      profiles: {
+        Row: {
+          id: string;
+          name: string | null;
+          full_name: string | null;
+          email: string | null;
+          age: number | null;
+          weight: number | null;
+          height: number | null;
+          lifestyle: LifestyleType;
+          primary_goal: GoalType | null;
+          goals: GoalType[] | null;
+          caffeine_habits: 'none' | 'low' | 'moderate' | 'high' | null;
+          caffeine_sensitivity: Level | null;
+          sleep_schedule: string | null;
+          sleep_quality: Level | null;
+          activity_level: Level | null;
+          stress_level: Level | null;
+          meal_pattern: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Record<string, unknown>;
+        Update: Record<string, unknown>;
+      };
+    };
+  };
+  pulse: {
+    Tables: {
+      profiles: {
+        Row: {
+          user_id: string;
+          name: string | null;
+          lifestyle: LifestyleType;
+          goals: GoalType[] | null;
+          sleep_schedule: string | null;
+          caffeine_habits: 'none' | 'low' | 'moderate' | 'high' | null;
+          caffeine_sensitivity: Level | null;
+          meal_pattern: string | null;
+          activity_level: Level | null;
+          stress_level: Level | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Record<string, unknown>;
+        Update: Record<string, unknown>;
+      };
+    };
+  };
+};
+
 export type DailyLogEntry = {
   id?: string;
   timestamp: string | Date;
-  type: 'event' | 'action' | 'state';
+  type: 'event' | 'action' | 'state' | 'recommendation';
+  title?: string;
   description?: string;
   details?: Record<string, unknown>;
 };

@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Home, Settings, User, Clock, Activity, Zap } from 'lucide-react';
+import { Home, Settings, User, Clock, Zap } from 'lucide-react';
 import Link from 'next/link';
 
 interface AppShellProps {

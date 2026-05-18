@@ -1,11 +1,11 @@
-import { DailyState, Level } from '@/lib/types';
+import type { DailyState } from '@/lib/types';
 
 interface StateIndicatorProps {
   state: DailyState;
 }
 
 function toneClass(value: 'low' | 'medium' | 'high') {
-  if (value === 'high') return 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20';
+  if (value === 'high') return 'bg-white text-black border-white';
   if (value === 'medium') return 'bg-amber-500/15 text-amber-300 border-amber-500/20';
   return 'bg-rose-500/15 text-rose-300 border-rose-500/20';
 }
