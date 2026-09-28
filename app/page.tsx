@@ -1,19 +1,12 @@
-import Link from 'next/link';
-import { MarketingGraphicsStack } from "@/components/MarketingGraphicsStack";
-import { ProcessFlowSection } from "@/components/ProcessFlowSection";
-import { HeroProductPanel } from "@/components/HeroProductPanel";
-import { TrustStrip } from "@/components/TrustStrip";
-import type { ComponentType } from 'react';
-import { ArrowRight, Brain, Coffee, Droplets, Moon, Utensils, Zap } from 'lucide-react';
-import { Navbar } from '@/components/navbar';
+import Link from "next/link";
+import type { ComponentType } from "react";
+import { ArrowRight, Brain, Coffee, Droplets, Moon, Utensils, Zap } from "lucide-react";
+import { Navbar } from "@/components/navbar";
+import { ProductHonestyNote } from "@/components/ProductHonestyNote";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#050505] text-white">
-        <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
-          <TrustStrip />
-        </div>
-
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-5 py-6 sm:px-8 lg:px-10">
         <Navbar />
         <div className="h-16 shrink-0" aria-hidden />
@@ -30,8 +23,8 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-white/68 sm:text-lg">
-              A calm adaptive decision layer for energy, nutrition, hydration, caffeine,
-              focus, sleep debt, hunger, stress, and the day you are actually living.
+              A calm adaptive decision layer for energy, nutrition, hydration, caffeine, focus, sleep debt, hunger,
+              stress, and the day you are actually living.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -79,12 +72,12 @@ export default function HomePage() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {[
-              'Knowledge workers protecting deep work',
-              'Founders trying to avoid decision fatigue',
-              'Shift workers managing odd energy curves',
-              'Physical labor workers balancing strain and fuel',
-              'Students timing focus and recovery',
-              'Busy parents making the next sane choice',
+              "Knowledge workers protecting deep work",
+              "Founders trying to avoid decision fatigue",
+              "Shift workers managing odd energy curves",
+              "Physical labor workers balancing strain and fuel",
+              "Students timing focus and recovery",
+              "Busy parents making the next sane choice",
             ].map((item) => (
               <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/72">
                 {item}
@@ -92,22 +85,21 @@ export default function HomePage() {
             ))}
           </div>
         </section>
+
+        <ProductHonestyNote status="demo" />
       </div>
-      <section className="mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6"><HeroProductPanel /></section>
-      <ProcessFlowSection />
-    <MarketingGraphicsStack />
     </main>
   );
 }
 
 function ProductPreview() {
   const metrics: Array<[string, string, ComponentType<{ className?: string }>]> = [
-    ['Energy', 'High', Zap],
-    ['Focus', 'High', Brain],
-    ['Hydration', 'Okay', Droplets],
-    ['Caffeine', 'Low', Coffee],
-    ['Fuel', 'Rising', Utensils],
-    ['Sleep debt', 'Medium', Moon],
+    ["Energy", "High", Zap],
+    ["Focus", "High", Brain],
+    ["Hydration", "Okay", Droplets],
+    ["Caffeine", "Low", Coffee],
+    ["Fuel", "Rising", Utensils],
+    ["Sleep debt", "Medium", Moon],
   ];
 
   return (
@@ -115,11 +107,11 @@ function ProductPreview() {
       <div className="rounded-[1.5rem] border border-white/10 bg-black/40 p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.24em] text-white/40">Your State</p>
+            <p className="text-xs uppercase tracking-[0.24em] text-white/40">Your State · sample</p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">Ready, but fragile</h2>
           </div>
           <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">
-            82
+            Sample 82
           </span>
         </div>
 
@@ -133,12 +125,12 @@ function ProductPreview() {
           ))}
         </div>
 
-        <div className="mt-5 rounded-2xl border border-white/10 bg-white text-black p-5">
+        <div className="mt-5 rounded-2xl border border-white/10 bg-white p-5 text-black">
           <p className="text-xs uppercase tracking-[0.22em] text-black/45">What To Do Next</p>
           <h3 className="mt-2 text-xl font-semibold">Drink water before more caffeine.</h3>
           <p className="mt-3 text-sm leading-6 text-black/65">
-            Hydration is only okay, caffeine load is low, and your focus window is valuable.
-            Stabilize first, then decide whether stimulation is still needed.
+            Hydration is only okay, caffeine load is low, and your focus window is valuable. Stabilize first, then
+            decide whether stimulation is still needed.
           </p>
         </div>
       </div>
